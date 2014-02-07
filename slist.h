@@ -105,4 +105,17 @@ struct slist_list *slist_new_list(void *(*node_alloc)(size_t),
 struct slist_node *slist_new_node(struct slist_list *list,
 				  void *data, void (*dalloc)(void *));
 
+
+/* executes 'print' on 'node' 'data' member
+ * passing NULL in 'node' returns with no operation executed
+ * passing NULL in 'print' returns with no operation executed
+ *
+ * passing invalid ['node' or 'print' ]
+ * ------- results in undefined behavior
+ *
+ * FIXME_NOTE: consider using a macro instead. using inline for now
+ */
+void slist_print_node(const struct slist_node *node,
+			     void (*print)(void *));
+
 #endif

@@ -237,5 +237,25 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_print_node");
+		struct slist_list *list;
+		struct slist_node *node;
+		//assume slist_new_list works
+		list = slist_new_list(NULL, NULL);
+		//assume slist_new_node works
+		assert( (node = slist_new_node(list, int_copy(10), int_dalloc)) );
+		//set print_test_global to default value
+		print_test_global = -1;
+		slist_print_node(node, print_test);
+		assert( 0 == print_test_global );
+		slist_print_node(node, print_test);
+		//clean up
+		free(node->data);
+		free(node);
+		free(list);
+		wmsg("[OK]\n");
+	}
+
 	return 0;
 }
