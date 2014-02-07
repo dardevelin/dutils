@@ -92,4 +92,17 @@ struct slist_list *slist_init(struct slist_list *list,
 struct slist_list *slist_new_list(void *(*node_alloc)(size_t),
 				  void (*node_dalloc)(void *));
 
+
+/* returns a new allocated 'node' initialized with 'data' and 'dalloc' 
+ * ------- returned 'node' needs to be freed
+ * passing NULL in 'data' sets 'node' 'data' to NULL
+ * passing NULL in 'dalloc' sets 'node' 'dalloc' to NULL
+ * ------- if 'dalloc' is set, _delete_ functions attemp to delete 'data'
+ *
+ * passing invalid ['list' or 'data' or 'dalloc' ]
+ * ------- results in undefined behavior
+ */
+struct slist_node *slist_new_node(struct slist_list *list,
+				  void *data, void (*dalloc)(void *));
+
 #endif
