@@ -136,6 +136,7 @@ int main(int argc, char **argv)
 		assert( -1 == print_test_global );
 		assert( (print_test(data), !print_test_global) );
 
+		free(data);
 		wmsg("[OK]\n");
 	}
 
@@ -232,6 +233,7 @@ int main(int argc, char **argv)
 		assert( !node->next );
 		assert( (node->data_dalloc(node->data), 1) );
 		free(node);
+		free(list);
 		wmsg("[OK]\n");
 	}
 
