@@ -56,6 +56,16 @@ typedef struct slist_list slist_list_t;
  * library interface and _base_ documentation
  ****************************************************************************/
 
-
+/* returns 'list' initialized with 'node_alloc' and 'node_dalloc'
+ * NULL is returned if 'list' is NULL
+ * passing NULL to 'node_alloc' sets it to SLIST_DEF_ALLOC.
+ * passing NULL to node_dalloc sets is to SLIST_DEF_DALLOC.
+ *
+ * passing invalid ['list' or 'node_alloc' or 'node_dalloc' ]
+ * ------- results in undefined behavior
+ */
+struct slist_list *slist_init(struct slist_list *list,
+			      void *(*node_alloc)(size_t),
+			      void (*node_dalloc)(void *));
 
 #endif
