@@ -132,4 +132,15 @@ void slist_delete_node(struct slist_list *list,
 		       struct slist_node *node);
 
 
+/* deletes 'list'
+ * passing NULL in 'list' returns with no operation executed
+ *
+ * NOTE: deleting the 'list0 won't free the nodes contained in it.
+ * ------- see slist_delete_all_nodes for that.
+ *
+ * passing invalid ['list']
+ * ------- results in undefined behavior
+ */
+void slist_delete_list(struct slist_list *list);
+
 #endif
