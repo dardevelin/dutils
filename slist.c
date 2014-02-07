@@ -88,4 +88,18 @@ inline void slist_print_node(const struct slist_node *node,
 	print(node->data);
 }/* slist_print_node */
 
+void slist_delete_node(struct slist_list *list,
+		       struct slist_node *node)
+{
+	if (!list || !node )
+		return;
+
+	//FIXME: add debug warning for existing 'node->data
+	//------ without _node_dalloc
+	if ( node->data && node->data_dalloc )
+		node->data_dalloc( node->data );
+
+	list->node_dalloc(node);
+	node = NULL;
+}/* slist_delete_node */
 
