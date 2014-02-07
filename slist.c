@@ -79,3 +79,13 @@ struct slist_node *slist_new_node(struct slist_list *list,
 
 	return node;
 }/* slist_new_node */
+
+inline void slist_print_node(const struct slist_node *node,
+			     void(*print)(void *))
+{
+	if ( !node || !print )
+		return;
+	print(node->data);
+}/* slist_print_node */
+
+
