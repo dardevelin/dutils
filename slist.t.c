@@ -193,6 +193,7 @@ int main(int argc, char **argv)
 	}
 
 	{
+		wmsg("testing library interface\n");
 		struct slist_list list;
 		wmsg("slist_init");
 		assert( slist_init(&list, NULL, NULL) );
@@ -200,6 +201,17 @@ int main(int argc, char **argv)
 		assert( SLIST_DEF_ALLOC == list.node_alloc );
 		assert( SLIST_DEF_DALLOC == list.node_dalloc );
 		assert( NULL == list.head );
+		wmsg("[OK]\n");
+	}
+
+	{
+		wmsg("slist_new_list");
+		struct slist_list *list;
+		assert( (list = slist_new_list(NULL, NULL)) );
+		assert( 0 == list->count );
+		assert( SLIST_DEF_ALLOC == list->node_alloc );
+		assert( SLIST_DEF_DALLOC == list->node_dalloc );
+		assert( NULL == list->head );
 		wmsg("[OK]\n");
 	}
 
