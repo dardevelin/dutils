@@ -270,6 +270,16 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_delete_list");
+		struct slist_list *list;
+		//assume slist_new_list works
+		list = slist_new_list(NULL, NULL);
+		assert( list );
+		slist_delete_list(list);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
