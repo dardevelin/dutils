@@ -257,5 +257,19 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_delete_node");
+		struct slist_list *list;
+		struct slist_node *node;
+		//assume slist_new_list works
+		list = slist_new_list(NULL, NULL);
+		assert( (node = slist_new_node(list, int_copy(10), int_dalloc)) );
+		//assume slist_new_node works
+		slist_delete_node(list, node);
+		free(list);
+		wmsg("[OK]\n");
+	}
+
+
 	return 0;
 }
