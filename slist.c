@@ -58,3 +58,24 @@ struct slist_list *slist_new_list(void *(*node_alloc)(size_t),
 
 	return list;
 }/* slist_new_list */
+
+struct slist_node *slist_new_node(struct slist_list *list,
+				  void *data, void (*dalloc)(void *))
+{
+
+	struct slist_node *node = NULL;
+
+	if ( NULL == (node = list->node_alloc( sizeof( struct slist_node))) ) {
+		//FIXME: add support for custom error loggin and msg
+		fprintf(stderr,"%s[%d]:%s alloc failed\n", __FILE__,
+			__LINE__,__func__);
+
+		return NULL;
+	}
+
+	node->data = data;
+	node->data_dalloc = dalloc;
+	node->next = NULL;
+
+	return node;
+}/* slist_new_node */
