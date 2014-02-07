@@ -20,6 +20,10 @@
 #ifndef DUTILS_SLIST_H_
 #define DUTILS_SLIST_H_
 
+/****************************************************************************
+ * standard libraries
+ ****************************************************************************/
+#include <stdio.h>
 #include <stdlib.h>
 
 #define SLIST_DEF_ALLOC malloc
@@ -67,5 +71,25 @@ typedef struct slist_list slist_list_t;
 struct slist_list *slist_init(struct slist_list *list,
 			      void *(*node_alloc)(size_t),
 			      void (*node_dalloc)(void *));
+
+
+/* returns a new allocated 'list' initialized with
+ * ------- 'node_alloc and 'node_dalloc'.
+ * ------- 'list' has to be freed
+ * passing NULL to 'node_alloc' sets it to SLIST_DEF_ALLOC
+ * passing NULL to node_dalloc sets it to SLIST_DEF_DALLOC.
+ * NULL is returned if node_alloc fails
+ *
+ * ABOUT [ node_alloc , node_dalloc ]:
+ * ------- this can either be library defaults or user defined
+ * ------- this functions must provided simillar interface to
+ * ------- SLIST_DEF_ALLOC and SLIST_DEF_DALLOC which are often
+ * ------- defined as 'malloc' and 'free' from <stdlib.h>
+ *
+ * passing invalid ['list' or 'node_alloc' or 'node_dalloc' ]
+ * ------- results in undefined behavior
+ */
+struct slist_list *slist_new_list(void *(*node_alloc)(size_t),
+				  void (*node_dalloc)(void *));
 
 #endif
