@@ -212,6 +212,26 @@ int main(int argc, char **argv)
 		assert( SLIST_DEF_ALLOC == list->node_alloc );
 		assert( SLIST_DEF_DALLOC == list->node_dalloc );
 		assert( NULL == list->head );
+		//don't leak
+		free(list);
+		wmsg("[OK]\n");
+	}
+
+	{
+		wmsg("slist_new_node");
+		struct slist_list *list;
+		struct slist_node *node;
+		assert( (list = slist_new_list(NULL, NULL)) );
+		//assume slist_new_list works
+		assert( (node = slist_new_node(list, NULL, NULL)) );
+		//free for next test
+		free(node);
+		assert( (node = slist_new_node(list, int_copy(10), int_dalloc)) );
+		assert( 10 == *(int*)node->data );
+		assert( int_dalloc == node->data_dalloc );
+		assert( !node->next );
+		assert( (node->data_dalloc(node->data), 1) );
+		free(node);
 		wmsg("[OK]\n");
 	}
 
