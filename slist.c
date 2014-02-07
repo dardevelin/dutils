@@ -103,3 +103,11 @@ void slist_delete_node(struct slist_list *list,
 	node = NULL;
 }/* slist_delete_node */
 
+void slist_delete_list(struct slist_list *list)
+{
+	if (!list)
+		return;
+
+	void (*node_dalloc)(void *) = list->node_dalloc;
+	node_dalloc(list);
+}
