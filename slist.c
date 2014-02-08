@@ -111,3 +111,16 @@ void slist_delete_list(struct slist_list *list)
 	void (*node_dalloc)(void *) = list->node_dalloc;
 	node_dalloc(list);
 }
+
+struct slist_node *slist_push_node(struct slist_list *list,
+				   struct slist_node *node)
+{
+	if ( !list || !node )
+		return NULL;
+
+	node->next = list->head;
+	list->head = node;
+	++list->count;
+
+	return node;
+}
