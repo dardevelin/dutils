@@ -152,7 +152,7 @@ struct slist_node *slist_append_node(struct slist_list *list,
 
 struct slist_node *slist_pop_node(struct slist_list *list)
 {
-	if( !list || !list->head )
+	if ( !list || !list->head )
 		return NULL;
 
 	struct slist_node *node = list->head;
