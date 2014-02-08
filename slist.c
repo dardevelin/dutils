@@ -182,3 +182,24 @@ struct slist_node *slist_find_node(struct slist_list *list, void *key,
 	return iter->next;
 
 }/* slist_find_node */
+
+size_t slist_find_index_of(struct slist_list *list, void *key,
+			   int (*cmp)(void *a, void *b))
+{
+	if ( !list || !list->head || !key || !cmp )
+		return 0;
+
+	struct slist_node *iter;
+	size_t idx = 1;
+
+	for(iter = list->head; NULL != iter; iter = iter->next, ++idx)
+	{
+		if ( 0 == cmp(iter->data, key) )
+			break;
+	}
+
+	if( !iter )
+		return 0;
+
+	return idx;
+}/* slist_find_index_of */
