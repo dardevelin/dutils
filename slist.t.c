@@ -305,6 +305,37 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_append_node");
+		struct slist_list *list;
+		struct slist_node *node;
+		//assume slist_new_list works
+		list = slist_new_list(NULL, NULL);
+		//assume slist_new_node + int_copy works
+		node = slist_new_node(list, int_copy(10), int_dalloc);
+		//test failures
+		assert( NULL == slist_append_node(NULL, NULL) );
+		assert( NULL == slist_append_node(NULL, node) );
+		assert( NULL == slist_append_node(list, NULL) );
+		//test working append at head
+		assert( slist_append_node(list, node) );
+		assert( 1 == list->count );
+		assert( list->head );
+		assert( 10 == *(int*)list->head->data );
+		//create another node to test at end append
+		node = slist_new_node(list, int_copy(11), int_dalloc);
+		//test working append at end
+		assert( slist_append_node(list, node) );
+		assert( 2 == list->count );
+		assert( 11 == *(int*)list->head->next->data );
+		//clean up
+		//assume  slist_delete_node + slist_delete_list works
+		slist_delete_node(list, list->head->next);
+		slist_delete_node(list, list->head);
+		slist_delete_list(list);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
