@@ -33,7 +33,7 @@
 #endif
 
 /****************************************************************************
- * helper functions used by the library
+ * helper functions used by the tests
  ****************************************************************************/
 
 static void *int_copy(int n)
