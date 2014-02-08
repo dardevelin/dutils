@@ -110,7 +110,7 @@ void slist_delete_list(struct slist_list *list)
 
 	void (*node_dalloc)(void *) = list->node_dalloc;
 	node_dalloc(list);
-}
+}/* slist_delete_list */
 
 struct slist_node *slist_push_node(struct slist_list *list,
 				   struct slist_node *node)
@@ -123,7 +123,7 @@ struct slist_node *slist_push_node(struct slist_list *list,
 	++list->count;
 
 	return node;
-}
+}/* slist_push_node */
 
 struct slist_node *slist_append_node(struct slist_list *list,
 				     struct slist_node *node)
@@ -148,4 +148,4 @@ struct slist_node *slist_append_node(struct slist_list *list,
 	node->next = NULL;
 	++list->count;
 	return pnode;
-}
+}/* slist_append_node */
