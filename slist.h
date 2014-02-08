@@ -165,4 +165,14 @@ struct slist_node *slist_push_node(struct slist_list *list,
 struct slist_node *slist_append_node(struct slist_list *list,
 				     struct slist_node *node);
 
+
+/* removes 'list' head and returns it
+ * passing NULL in 'list' returns NULL
+ * passing an empty 'list' returns NULL
+ *
+ * passing invalid ['list']
+ * ------- results in undefined behavior
+ */
+struct slist_node *slist_pop_node(struct slist_list *list);
+
 #endif
