@@ -149,3 +149,15 @@ struct slist_node *slist_append_node(struct slist_list *list,
 	++list->count;
 	return pnode;
 }/* slist_append_node */
+
+struct slist_node *slist_pop_node(struct slist_list *list)
+{
+	if( !list || !list->head )
+		return NULL;
+
+	struct slist_node *node = list->head;
+
+	list->head = list->head->next;
+	--list->count;
+	return node;
+}/* slist_pop_node */
