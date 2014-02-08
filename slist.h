@@ -175,4 +175,20 @@ struct slist_node *slist_append_node(struct slist_list *list,
  */
 struct slist_node *slist_pop_node(struct slist_list *list);
 
+
+/* returns the 'node matching 'key'
+ * returns NULL if 'key' is not found
+ * passing NULL in 'list' returns NULL
+ * passing an empty 'list' returns NULL
+ * passing NULL 'key' returns NULL
+ * passing NULL 'cmp' function returns NULL
+ *
+ * ABOUT 'cmp': function needs to return 0 when 'a' and 'b' match
+ *
+ * passing invalid ['list' or 'key' or 'cmp']
+ * ------- results in undefined behavior
+ */
+struct slist_node *slist_find_node(struct slist_list *list, void *key,
+				   int (*cmp)(void *a, void *b));
+
 #endif
