@@ -336,6 +336,29 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_pop_node");
+		struct slist_list *list;
+		struct slist_node *node;
+		//assume slist_new_list works
+		list = slist_new_list(NULL, NULL);
+		//assume slist_new_node + int_copy works
+		node = slist_new_node(list, int_copy(10), int_dalloc);
+		//test failures
+		assert( NULL == slist_pop_node(NULL) );
+		assert( NULL == slist_pop_node(NULL) );
+		//push node for further testings, assume slist_push_node works
+		slist_push_node(list, node);
+		node = NULL;
+		assert( (node = slist_pop_node(list)) );
+		assert( 0 == list->count );
+		assert( NULL == list->head );
+		//clean up
+		slist_delete_node(list, node);
+		slist_delete_list(list);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
