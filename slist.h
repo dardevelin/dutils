@@ -191,4 +191,22 @@ struct slist_node *slist_pop_node(struct slist_list *list);
 struct slist_node *slist_find_node(struct slist_list *list, void *key,
 				   int (*cmp)(void *a, void *b));
 
+
+/* returns the 'index' of 'key' in 'list'
+ * returns 0 if 'list' is NULL
+ * returns 0 if 'list' is empty
+ * returns 0 if 'key' is NULL
+ * returns 0 if 'key' is no found
+ * returns 0 if 'cmp' is NULL
+ *
+ * ABOUT indexing: starts at 1, 0 is reserved (see above)
+ *
+ * ABOUT 'cmp': function needs to return 0 when 'a' and 'b' match
+ *
+ * passing invalid ['list' or 'key' or 'cmp']
+ * ------- results in undefined behavior
+ */
+size_t slist_find_index_of(struct slist_list *list, void *key,
+			   int (*cmp)(void *a, void *b));
+
 #endif
