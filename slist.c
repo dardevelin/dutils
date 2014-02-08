@@ -161,3 +161,24 @@ struct slist_node *slist_pop_node(struct slist_list *list)
 	--list->count;
 	return node;
 }/* slist_pop_node */
+
+struct slist_node *slist_find_node(struct slist_list *list, void *key,
+				   int (*cmp)(void *a, void *b))
+{
+	if ( !list || !list->head || !key || !cmp )
+		return NULL;
+
+	struct slist_node *iter;
+	//check if found @ head
+	if ( 0 == cmp(list->head->data, key) )
+		return list->head;
+
+	for(iter = list->head; NULL != iter->next; iter = iter->next)
+	{
+		if ( 0 == cmp(iter->next->data, key) )
+			break;
+	}
+
+	return iter->next;
+
+}/* slist_find_node */
