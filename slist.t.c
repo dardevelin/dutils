@@ -426,6 +426,66 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_find_index_of");
+		struct slist_list *list;
+		struct slist_node *node;
+		void *key;
+		//assume slist_new_list works
+		list = slist_new_list(NULL, NULL);
+		//assume slist_new_node + int_copy works
+		node = slist_new_node(list, int_copy(10), int_dalloc);
+		key = int_copy(10);
+		//test failures
+		assert( 0 == slist_find_index_of(NULL, NULL, NULL) );
+		assert( 0 == slist_find_index_of(list, NULL, NULL) );
+		assert( 0 == slist_find_index_of(NULL, key, NULL) );
+		assert( 0 == slist_find_index_of(NULL, NULL, cmp_int) );
+		assert( 0 == slist_find_index_of(list, key, NULL) );
+		assert( 0 == slist_find_index_of(NULL, key, cmp_int) );
+		//empty list
+		assert( 0 == slist_find_index_of(list, key, cmp_int) );
+		//add node to list so we can test it
+		slist_push_node(list, node);
+		//test found in head
+		assert( 1 == slist_find_index_of(list, key, cmp_int) );
+		//add some more nodes to test other scenarios
+		node = slist_new_node(list, int_copy(9), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(8), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(7), int_dalloc);
+		slist_push_node(list, node);
+		//after all pushes, 10 is tail so should be index 4
+		//test found in tail
+		assert( 4 == slist_find_index_of(list, key, cmp_int) );
+		//edit key to test common :middle: found
+		*(int*)key = 8;
+		assert( 2 == slist_find_index_of(list, key, cmp_int) );
+		//edit key to test not found
+		*(int*)key = 100;
+		//test not found
+		assert( 0 == slist_find_index_of(list, key, cmp_int) );
+		//clean uo
+		//there are 4 nodes
+		node = slist_pop_node(list);
+		slist_delete_node(list, node);
+
+		node = slist_pop_node(list);
+		slist_delete_node(list, node);
+
+		node = slist_pop_node(list);
+		slist_delete_node(list, node);
+
+		node = slist_pop_node(list);
+		slist_delete_node(list, node);
+		//delete our list
+		slist_delete_list(list);
+		//time to clean our key
+		int_dalloc(key);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
