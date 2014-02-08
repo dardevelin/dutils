@@ -143,4 +143,15 @@ void slist_delete_node(struct slist_list *list,
  */
 void slist_delete_list(struct slist_list *list);
 
+
+/* returns the 'list' head new head
+ * passing NULL in 'list' returns NULL
+ * passing NULL in 'node' returns NULL
+ *
+ * passing invalid ['list' or 'node']
+ * ------- results in undefined behavior
+ */
+struct slist_node *slist_push_node(struct slist_list *list,
+				   struct slist_node *node);
+
 #endif
