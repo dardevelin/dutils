@@ -124,3 +124,28 @@ struct slist_node *slist_push_node(struct slist_list *list,
 
 	return node;
 }
+
+struct slist_node *slist_append_node(struct slist_list *list,
+				     struct slist_node *node)
+{
+	if ( !list || !node )
+		return NULL;
+
+	struct slist_node *pnode = NULL;
+	//check add @ head
+	if ( !list->head ) {
+		list->head = node;
+		++list->count;
+		return node;
+	}
+
+	pnode = list->head;
+	while( NULL != pnode->next )
+		pnode = pnode->next;
+
+	pnode->next = node;
+	//ensure a node is a working tail
+	node->next = NULL;
+	++list->count;
+	return pnode;
+}
