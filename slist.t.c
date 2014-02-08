@@ -280,6 +280,31 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_push_node");
+		struct slist_list *list;
+		struct slist_node *node;
+		//assume slist_new_list works
+		list = slist_new_list(NULL, NULL);
+		//assume slist_new_node + int_copy works
+		node = slist_new_node(list, int_copy(10), int_dalloc);
+		//test failures
+		assert( NULL == slist_push_node(NULL, NULL) );
+		assert( NULL == slist_push_node(NULL, node) );
+		assert( NULL == slist_push_node(list, NULL) );
+		//test working push
+		assert(  slist_push_node(list, node) );
+		//check if push did everything
+		assert( 1 == list->count );
+		assert( list->head );
+		assert( 10 == *(int*) list->head->data );
+		//everything seems fine, now lets clean up
+		node = NULL;
+		slist_delete_node(list, list->head);
+		slist_delete_list(list);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
