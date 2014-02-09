@@ -324,3 +324,8 @@ struct slist_list *slist_reverse_list(struct slist_list *list)
 
 	return list;
 }/* slist_reverse_list */
+
+inline size_t slist_get_size(struct slist_list *list)
+{
+	return list->count;
+}/* slist_get_size */
