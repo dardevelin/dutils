@@ -557,6 +557,71 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_remove_node_at");
+		struct slist_list *list;
+		struct slist_node *node;
+		//assume slist_new_list works
+		list = slist_new_list(NULL, NULL);
+		//assume slist_new_node + int_copy works
+		node = slist_new_node(list, int_copy(10), int_dalloc);
+		//test failures
+		assert( NULL == slist_remove_node_at(NULL, 1) );
+		//test empty
+		assert( NULL == slist_remove_node_at(list, 1) );
+		//add the node for further testing
+		//assume slist_push_node works
+		slist_push_node(list, node);
+		//test lower bounds
+		assert( NULL == slist_remove_node_at(list, 0) );
+		//test higher bounds
+		assert( NULL == slist_remove_node_at(list, 100) );
+		//test found at head
+		node = NULL;
+		assert( (node = slist_remove_node_at(list, 1)) );
+		assert( 0 == list->count );
+		assert( NULL == list->head );
+		assert( 10 == *(int*)node->data );
+		//push node back for further testing
+		slist_push_node(list, node);
+		//add some more nodes to test other scenarios
+		node = slist_new_node(list, int_copy(9), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(8), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(7), int_dalloc);
+		slist_push_node(list, node);
+		//after all pushes ::there are 4 nodes::
+		//test found and remove in end/tail
+		assert( (node = slist_remove_node_at(list, 4)) );
+		assert( 3 == list->count );
+		assert( 10 == *(int*)node->data );
+		//append our node back for now
+		slist_append_node(list, node);
+		//test common :middle: found
+		node = NULL;
+		assert( (node = slist_remove_node_at(list, 2)) );
+		assert( 3 == list->count );
+		assert( 8 == *(int*)node->data );
+		//see if it was really removed
+		assert( node != list->head->next );
+		//delete our node
+		slist_delete_node(list, node);
+		//clean up
+		//there are 3 nodes
+		node = slist_pop_node(list);
+		slist_delete_node(list, node);
+
+		node = slist_pop_node(list);
+		slist_delete_node(list, node);
+
+		node = slist_pop_node(list);
+		slist_delete_node(list, node);
+		//delete our list
+		slist_delete_list(list);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
