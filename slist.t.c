@@ -721,6 +721,51 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_push_list");
+		struct slist_list *list;
+		struct slist_list *s_list;
+		struct slist_node *node;
+		list = slist_new_list(NULL, NULL);
+		s_list = slist_new_list(NULL, NULL);
+		//test failures
+		assert( NULL == slist_push_list(NULL, NULL) );
+		assert( NULL == slist_push_list(list, NULL) );
+		assert( NULL == slist_push_list(NULL, s_list) );
+		//test empty
+		assert( NULL == slist_push_list(list, s_list) );
+		//build the lists to test 'proper behavior'
+		//list
+		node = slist_new_node(list, int_copy(6), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(5), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(4), int_dalloc);
+		slist_push_node(list, node);
+		//s_list
+		node = slist_new_node(s_list, int_copy(3), int_dalloc);
+		slist_push_node(s_list, node);
+		node = slist_new_node(s_list, int_copy(2), int_dalloc);
+		slist_push_node(s_list, node);
+		node = slist_new_node(s_list, int_copy(1), int_dalloc);
+		slist_push_node(s_list, node);
+		//test
+		assert( NULL != slist_push_list(list, s_list) );
+		//confirm that s_list is now empty
+		assert( NULL == s_list->head );
+		assert( 0 == s_list->count );
+		//confirm that the merge was properly done
+		//check for new list head (should be 1)
+		assert( 1 == *(int*)list->head->data );
+		//check if 3 node points to 'list' old head
+		assert( 4 == *(int*)list->head->next->next->next->data );
+		//clean up
+		slist_delete_all_nodes(list);
+		slist_delete_list(list);
+		slist_delete_list(s_list);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
