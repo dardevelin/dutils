@@ -290,6 +290,8 @@ struct slist_list *slist_delete_all_nodes(struct slist_list *list);
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
+
+
 struct slist_list *slist_reverse_list(struct slist_list *list);
 
 /* returns the number of 'nodes' contained in 'list'
