@@ -445,3 +445,56 @@ struct slist_list *slist_split_list(struct slist_list *list, void *key,
 	return n_list;
 
 }/* slist_split_list */
+
+struct slist_list *slist_split_list_at(struct slist_list *list,
+				       const size_t index)
+{
+
+	if ( !list || !list->head || 0 == index || index > list->count )
+		return NULL;
+
+	struct slist_list *n_list = NULL;
+	struct slist_node *head = NULL;
+	struct slist_node *prev = NULL;
+
+	size_t idx = 1;
+
+	//create our slist
+	n_list = slist_new_list(list->node_alloc, list->node_dalloc);
+
+	if ( !n_list )
+		return NULL;
+
+	//remove at head
+	if ( 1 == index ) {
+		n_list->head = list->head;
+		n_list->count = list->count;
+		list->head = NULL;
+		list->count = 0;
+		return n_list;
+	}
+
+	prev = head = list->head;
+
+	for(idx = index - 1; idx; --idx)
+	{
+		prev = head;
+		head = head->next;
+	}
+
+
+	prev->next = NULL;
+	n_list->head = head;
+
+	//remove at tail ?
+	if (list->count == index ) {
+		n_list->count = list->count - index + 1;
+	} else {
+		n_list->count = index;
+	}
+
+	list->count = index - 1;
+
+	return n_list;
+
+}/* slist_split_list_at */
