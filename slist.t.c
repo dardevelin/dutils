@@ -707,6 +707,20 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_get_size");
+		struct slist_list *list;
+		struct slist_node *node;
+		list = slist_new_list(NULL, NULL);
+		node = slist_new_node(list, int_copy(10), int_dalloc);
+		slist_push_node(list, node);
+		assert( 1 == list->count && 1 == slist_get_size(list) );
+		//clean up
+		slist_delete_node(list, slist_pop_node(list));
+		slist_delete_list(list);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
