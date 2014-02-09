@@ -811,6 +811,82 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_split_list");
+		struct slist_list *list;
+		struct slist_list *n_list;
+		struct slist_node *node;
+		void *key;
+		list = slist_new_list(NULL, NULL);
+		key = int_copy(6);
+		//test failures
+		assert( NULL == slist_split_list(NULL, NULL, NULL) );
+		assert( NULL == slist_split_list(list, NULL, NULL) );
+		assert( NULL == slist_split_list(NULL, key, NULL) );
+		assert( NULL == slist_split_list(NULL, NULL, cmp_int) );
+		assert( NULL == slist_split_list(list, key, NULL) );
+		assert( NULL == slist_split_list(NULL, key, cmp_int) );
+		//test empty
+		assert( NULL == slist_split_list(list, key, cmp_int) );
+		//create node for testing
+		node = slist_new_node(list, int_copy(6), int_dalloc);
+		slist_push_node(list, node);
+		//test found @ head and split
+		assert( (n_list = slist_split_list(list, key, cmp_int)) );
+		//check list is indeed empty
+		assert( NULL == list->head );
+		assert( 0 == list->count );
+		//check n_list has all data properly set
+		assert( NULL != n_list->head );
+		assert( 1 == n_list->count );
+		assert( 6 == *(int*)n_list->head->data );
+		//quick clean up
+		slist_delete_all_nodes(n_list);
+		slist_delete_list(n_list);
+		n_list = NULL;
+		node = NULL;
+		//build some nodes for further testing
+		node = slist_new_node(list, int_copy(6), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(5), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(4), int_dalloc);
+		slist_push_node(list, node);
+		//test end/tail split
+		assert( (n_list = slist_split_list(list, key, cmp_int)) );
+		//check list was properly split
+		assert( NULL == list->head->next->next );
+		assert( 2 == list->count );
+		//check n_list has all data properly set
+		assert( 1 == n_list->count );
+		assert( 6 == *(int*)n_list->head->data );
+		//save node in 'list' for further testing
+		node = slist_pop_node(n_list);
+		slist_append_node(list, node);
+		//quick clean up
+		slist_delete_list(n_list);
+		n_list = NULL;
+		//edit key to test common :middle: split
+		*(int*)key = 5;
+		//the test
+		assert( (n_list = slist_split_list(list, key, cmp_int)) );
+		//check list has everything properly set
+		assert( 1 == list->count );
+		assert( 4 == *(int*)list->head->data );
+		//check n_list has everything properly set
+		assert( 2 == n_list->count );
+		assert( 5 == *(int*)n_list->head->data );
+		assert( 6 == *(int*)n_list->head->next->data );
+		assert( NULL == n_list->head->next->next );
+		//clean up
+		slist_delete_all_nodes(list);
+		slist_delete_all_nodes(n_list);
+		slist_delete_list(list);
+		slist_delete_list(n_list);
+		int_dalloc(key);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
