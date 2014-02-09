@@ -49,7 +49,7 @@ struct slist_list
 };
 
 /****************************************************************************
- * convinience data types for library consumers/users 
+ * convinience data types for library consumers/users
  ****************************************************************************/
 
 typedef struct slist_node slist_node_t;
@@ -93,7 +93,7 @@ struct slist_list *slist_new_list(void *(*node_alloc)(size_t),
 				  void (*node_dalloc)(void *));
 
 
-/* returns a new allocated 'node' initialized with 'data' and 'dalloc' 
+/* returns a new allocated 'node' initialized with 'data' and 'dalloc'
  * ------- returned 'node' needs to be freed
  * passing NULL in 'data' sets 'node' 'data' to NULL
  * passing NULL in 'dalloc' sets 'node' 'dalloc' to NULL
@@ -388,5 +388,31 @@ struct slist_list *slist_append_list(struct slist_list *list,
  */
 struct slist_list *slist_split_list(struct slist_list *list, void *key,
 				    int (*cmp)(void *a, void *b));
+
+
+/* returns a newly allocated 'list' with head set to 'node' stored in index
+ * returns NULL if 'list' is NULL
+ * returns NULL if 'list' is empty
+ * returns NULL if 'index' is out of bounds
+ * returns NULL if allocation of 'new list' fails
+ *
+ * ---info makes 'list' empty if 'index' is 1/head
+ *
+ * ABOUT cmp: function needs to return 0 when 'a' and 'b' match
+ * example: *****************************************************************
+ * ------- before split
+ * ------- list          -> 4, 5, 6, end
+ * ------- ******************************************************************
+ * ------- after split [with index set to 2]
+ * ------- list          -> 4, end
+ * ------- returned_list -> 5, 6, end
+ * **************************************************************************
+ *
+ * passing invalid ['list']
+ * ------- results in undefined behavior
+ */
+struct slist_list *slist_split_list_at(struct slist_list *list,
+				       const size_t index);
+
 
 #endif
