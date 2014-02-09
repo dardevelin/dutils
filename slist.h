@@ -275,4 +275,21 @@ void slist_foreach_node(struct slist_list *list,
  */
 struct slist_list *slist_delete_all_nodes(struct slist_list *list);
 
+
+/* returns 'list' reversed
+ * example:******************************************************************
+ * -------- if your list configuration looks like the following
+ * -------- list-> 0, 1, 2, 3, 4, 5, end
+ * --------
+ * -------- 'list' after execution
+ * -------- list-> 5, 4, 3, 2, 1, 0, end
+ *
+ * returns NULL if 'list' is NULL
+ * returns NULL if 'list' is empty
+ *
+ * passing invalid ['list']
+ * ------- results in undefined behavior
+ */
+struct slist_list *slist_reverse_list(struct slist_list *list);
+
 #endif
