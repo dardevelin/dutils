@@ -292,4 +292,14 @@ struct slist_list *slist_delete_all_nodes(struct slist_list *list);
  */
 struct slist_list *slist_reverse_list(struct slist_list *list);
 
+/* returns the number of 'nodes' contained in 'list'
+ * ABOUT slist_get_size : this function is a stub/dummy function
+ * ---------------------- and is inlined, because of that, no safety
+ * ---------------------- checks are made
+ *
+ * passing invalid ['list']
+ * ------- results in undefined behavior
+ */
+size_t slist_get_size(struct slist_list *list);
+
 #endif
