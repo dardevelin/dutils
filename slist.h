@@ -264,4 +264,15 @@ void slist_foreach_node(struct slist_list *list,
 			void *(*action)(void *carry, void *data, void *param),
 			void *param);
 
+
+/* returns 'list' empty deleting all 'nodes' contained in 'list'
+ * returns NULL if 'list' is NULL
+ * returns NULL if 'list' is empty
+ * ABOUT 'list' _status_ : still needs to be freed. see slist_delete_list
+ *
+ * passing invalid ['list']
+ * ------- results in undefined behavior
+ */
+struct slist_list *slist_delete_all_nodes(struct slist_list *list);
+
 #endif
