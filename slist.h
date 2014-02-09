@@ -239,4 +239,29 @@ struct slist_node *slist_remove_node(struct slist_list *list, void *key,
 struct slist_node *slist_remove_node_at(struct slist_list *list,
 					const size_t index);
 
+
+/* executes 'action' in each 'node' contained in 'list'
+ * returns without any action performed if 'list' is NULL
+ * returns without any action performed if 'list' is empty
+ * returns without any action performed if 'action' is NULL
+ * passing NULL in 'param' is allowed
+ *
+ * ABOUT 'action': function takes 3 parameters
+ * -------- carry: an argument that is used to 'catch' the result
+ * --------------- of 'action' and carry it into next execution
+ * --------------- _foreach call of slist_foreach_node carry is NULL
+ * --------------- in first execution of 'action'
+ * -------- data:  the data contained in the node
+ * -------- param: optional. param is passed to all action calls
+ *
+ * passing invalid ['list' or 'action' or 'param']
+ * ------- results in undefined behavior
+ * //FIXME: consider setting errno
+ * //FIXME: consider removing carry and return value, since a packed param
+ * -------- should suffice.
+ */
+void slist_foreach_node(struct slist_list *list,
+			void *(*action)(void *carry, void *data, void *param),
+			void *param);
+
 #endif
