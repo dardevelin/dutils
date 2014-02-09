@@ -622,6 +622,39 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_foreach_node");
+		struct slist_list *list;
+		struct slist_node *node;
+		list = slist_new_list(NULL, NULL);
+		//create some nodes to test
+		node = slist_new_node(list, int_copy(10), int_dalloc);
+		slist_push_node(list,node);
+		node = slist_new_node(list, int_copy(9), int_dalloc);
+		slist_push_node(list,node);
+		node = slist_new_node(list, int_copy(8), int_dalloc);
+		slist_push_node(list,node);
+		node = slist_new_node(list, int_copy(7), int_dalloc);
+		slist_push_node(list,node);
+		
+		slist_foreach_node(list, action_test, NULL);
+		//clean up
+		node = slist_pop_node(list);
+		slist_delete_node(list, node);
+
+		node = slist_pop_node(list);
+		slist_delete_node(list,node);
+
+		node = slist_pop_node(list);
+		slist_delete_node(list,node);
+		
+		node = slist_pop_node(list);
+		slist_delete_node(list,node);
+		
+		slist_delete_list(list);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
