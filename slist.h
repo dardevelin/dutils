@@ -225,4 +225,18 @@ size_t slist_find_index_of(struct slist_list *list, void *key,
 struct slist_node *slist_remove_node(struct slist_list *list, void *key,
 				     int (*cmp)(void *a, void *b));
 
+
+/* returns the 'node' stored in 'index' position removing it
+ * returns NULL if 'list' is NULL
+ * returns NULL if 'list' is empty
+ * returns NULL if 'index' is out of bounds
+ *
+ * ABOUT 'index' : starts counting at 1
+ *
+ * passing invalid ['list' or 'index']
+ * ------- results in undefined behavior
+ */
+struct slist_node *slist_remove_node_at(struct slist_list *list,
+					const size_t index);
+
 #endif
