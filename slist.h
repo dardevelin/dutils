@@ -362,4 +362,31 @@ struct slist_list *slist_push_list(struct slist_list *list,
 struct slist_list *slist_append_list(struct slist_list *list,
 				     struct slist_list *s_list);
 
+
+/* returns a newly allocated 'list' with head set to 'key'
+ * returns NULL if 'list' is NULL
+ * returns NULL if 'list' is empty
+ * returns NULL if 'key' is NULL
+ * returns NULL if 'cmp' is NULL
+ * returns NULL if 'key' is not found
+ * returns NULL if allocation of 'new list' fails
+ *
+ * ---info makes 'list' empty if 'key' matches @ head
+ *
+ * ABOUT cmp: function needs to return 0 when 'a' and 'b' match
+ * example: *****************************************************************
+ * ------- before split
+ * ------- list          -> 4, 5, 6, end
+ * ------- ******************************************************************
+ * ------- after split [with key set to 5]
+ * ------- list          -> 4, end
+ * ------- returned_list -> 5, 6, end
+ * **************************************************************************
+ *
+ * passing invalid ['list' or 's_list']
+ * ------- results in undefined behavior
+ */
+struct slist_list *slist_split_list(struct slist_list *list, void *key,
+				    int (*cmp)(void *a, void *b));
+
 #endif
