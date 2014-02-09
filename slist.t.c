@@ -655,6 +655,32 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_delete_all_nodes");
+		struct slist_list *list;
+		struct slist_node *node;
+		list = slist_new_list(NULL, NULL);
+		//test failures
+		assert( NULL == slist_delete_all_nodes(NULL) );
+		//test empty
+		assert( NULL == slist_delete_all_nodes(list) );
+		//create some nodes for further testing
+		node = slist_new_node(list, int_copy(10), int_dalloc);
+		slist_push_node(list,node);
+		node = slist_new_node(list, int_copy(9), int_dalloc);
+		slist_push_node(list,node);
+		node = slist_new_node(list, int_copy(8), int_dalloc);
+		slist_push_node(list,node);
+		node = slist_new_node(list, int_copy(7), int_dalloc);
+		slist_push_node(list,node);
+		assert( NULL != slist_delete_all_nodes(list) );
+		assert( NULL == list->head );
+		assert( 0 == list->count );
+		//clean up
+		slist_delete_list(list);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
