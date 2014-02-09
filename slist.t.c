@@ -681,6 +681,32 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_reverse_list");
+		struct slist_list *list;
+		struct slist_node *node;
+		list = slist_new_list(NULL, NULL);
+		//test failures
+		assert( NULL == slist_reverse_list(NULL) );
+		//test empty
+		assert( NULL == slist_reverse_list(list) );
+
+		for(int i=1000; 0 < i; --i) 
+		{
+			node = slist_new_node(list, int_copy(i), int_dalloc);
+			slist_push_node(list,node);
+		}
+
+		//execute
+		assert( NULL != slist_reverse_list(list) );
+		//do the actual test , set to silent
+		slist_foreach_node(list, action_reverse_print_test, NULL);
+		//clean up
+		slist_delete_all_nodes(list);
+		slist_delete_list(list);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
