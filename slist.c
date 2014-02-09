@@ -393,3 +393,55 @@ struct slist_list *slist_append_list(struct slist_list *list,
 	return list;
 
 }/* slist_append_list */
+
+struct slist_list *slist_split_list(struct slist_list *list, void *key,
+				    int (*cmp)(void *a, void *b))
+{
+	if ( !list || !list->head || !key || !cmp )
+		return NULL;
+
+	struct slist_list *n_list = NULL;
+	struct slist_node *iter = NULL;
+
+	//check key @ head
+	if ( 0 == cmp(list->head->data, key) ) {
+		n_list = slist_new_list(list->node_alloc, list->node_dalloc);
+		if ( NULL == n_list )
+			return NULL;
+
+		n_list->head = list->head;
+		n_list->count = list->count;
+		//make list empty
+		list->head = NULL;
+		list->count = 0;
+		return n_list;
+	}
+
+	//help us update list sizes without transversing
+	size_t idx = 0;
+
+	//search for key
+	for(iter = list->head; NULL != iter->next; iter = iter->next, ++idx)
+	{
+		if ( 0 == cmp(iter->next->data, key) )
+			break;
+	}
+
+	//check if node was found
+	if ( NULL == iter->next )
+		return NULL;
+
+	n_list = slist_new_list(list->node_alloc, list->node_dalloc);
+
+	if ( NULL == n_list )
+		return NULL;
+
+	//keep in mind we are one node behind so we can remove/trim
+	n_list->head = iter->next;
+	n_list->count = list->count - idx - 1;
+	list->count = idx + 1;
+	iter->next = NULL;
+
+	return n_list;
+
+}/* slist_split_list */
