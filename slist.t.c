@@ -486,6 +486,77 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_remove_node");
+		struct slist_list *list;
+		struct slist_node *node;
+		void *key;
+		//assume slist_new_list works
+		list = slist_new_list(NULL, NULL);
+		//assume slist_new_node + int_copy works
+		node = slist_new_node(list, int_copy(10), int_dalloc);
+		key = int_copy(10);
+		//test failures
+		assert( NULL == slist_remove_node(NULL, NULL, NULL) );
+		assert( NULL == slist_remove_node(list, NULL, NULL) );
+		assert( NULL == slist_remove_node(NULL, key, NULL) );
+		assert( NULL == slist_remove_node(NULL, NULL, cmp_int) );
+		assert( NULL == slist_remove_node(list, key, NULL) );
+		assert( NULL == slist_remove_node(NULL, key, cmp_int) );
+		//empty list
+		assert( NULL == slist_remove_node(list, key, cmp_int) );
+		//add node to list so we can test it
+		slist_push_node(list, node);
+		//test found in head
+		node = NULL;
+		assert( (node = slist_remove_node(list, key, cmp_int)) );
+		assert( NULL == list->head );
+		assert( 0 == list->count );
+		assert( 10 == *(int*)node->data );
+		//push node back for further testing
+		slist_push_node(list, node);
+		//add some more nodes to test other scenarios
+		node = slist_new_node(list, int_copy(9), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(8), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(7), int_dalloc);
+		slist_push_node(list, node);
+		//after all pushes
+		//test found and remove in end/tail
+		assert( (node = slist_remove_node(list, key, cmp_int)) );
+		assert( NULL == list->head->next->next->next );
+		assert( 3 == list->count );
+		assert( 10 == *(int*)node->data );
+		//append our node back for now
+		slist_append_node(list, node);
+		//edit key to test common :middle: found
+		*(int*)key = 8;
+		assert( (node = slist_remove_node(list, key, cmp_int)) );
+		assert( 8 == *(int*)node->data );
+		//delete the node
+		slist_delete_node(list, node);
+		//edit key to test not found
+		*(int*)key = 100;
+		//test not found
+		assert( NULL == slist_remove_node(list, key, cmp_int) );
+		//clean up
+		//there are 3 nodes
+		node = slist_pop_node(list);
+		slist_delete_node(list, node);
+
+		node = slist_pop_node(list);
+		slist_delete_node(list, node);
+
+		node = slist_pop_node(list);
+		slist_delete_node(list, node);
+		//delete our list
+		slist_delete_list(list);
+		//time to clean our key
+		int_dalloc(key);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
