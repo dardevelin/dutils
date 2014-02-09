@@ -887,6 +887,77 @@ int main(int argc, char **argv)
 		wmsg("[OK]\n");
 	}
 
+	{
+		wmsg("slist_split_list_at");
+		struct slist_list *list;
+		struct slist_list *n_list;
+		struct slist_node *node;
+		list = slist_new_list(NULL, NULL);
+		//test failures
+		assert( NULL == slist_split_list_at(NULL, 1) );
+		//test empty
+		assert( NULL == slist_split_list_at(list, 1) );
+		//create some nodes for further testing
+		node = slist_new_node(list, int_copy(6), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(5), int_dalloc);
+		slist_push_node(list, node);
+		node = slist_new_node(list, int_copy(4), int_dalloc);
+		slist_push_node(list, node);
+		//test lower bounds
+		assert( NULL == slist_split_list_at(list, 0) );
+		//test higher bounds
+		assert( NULL == slist_split_list_at(list, 100) );
+		//test index at head
+		assert( (n_list = slist_split_list_at(list, 1)) );
+		//check list is indeed empty
+		assert( NULL == list->head );
+		assert( 0 == list->count );
+		//check n_list has all data properly set
+		assert(NULL != n_list->head );
+		assert( 3 == n_list->count );
+		//move all data back to list and test next scenarios
+		list->head = n_list->head;
+		list->count = n_list->count;
+		//quick clean up
+		slist_delete_list(n_list);
+		n_list = NULL;
+		//test index at end/tail
+		assert( (n_list = slist_split_list_at(list, 3)) );
+		//check list has everything properly set
+		assert( NULL != list->head );
+		assert( 2 == list->count );
+		assert( NULL == list->head->next->next );
+		assert( 5 == *(int*)list->head->next->data );
+		//check n_list has everything properly set
+		assert( NULL != n_list->head );
+		assert( 1 == n_list->count );
+		assert( 6 == *(int*)n_list->head->data );
+		//move data back to list for futher testing
+		node = slist_pop_node(n_list);
+		slist_append_node(list, node);
+		//quick clean up
+		slist_delete_list(n_list);
+		//test common :middle: index
+		assert( (n_list = slist_split_list_at(list, 2)) );
+		//check list has everything properly set
+		assert( NULL != list->head );
+		assert( NULL == list->head->next );
+		assert( 1 == list->count );
+		assert( 4 == *(int*)list->head->data );
+		//check n_list has everything properly set
+		assert( NULL != n_list->head );
+		assert( 2 == n_list->count );
+		assert( 5 == *(int*)n_list->head->data );
+		assert( NULL == n_list->head->next->next );
+		//clean up
+		slist_delete_all_nodes(list);
+		slist_delete_all_nodes(n_list);
+		slist_delete_list(list);
+		slist_delete_list(n_list);
+		wmsg("[OK]\n");
+	}
+
 
 	return 0;
 }
