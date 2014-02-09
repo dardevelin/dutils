@@ -362,3 +362,34 @@ struct slist_list *slist_push_list(struct slist_list *list,
 	return list;
 
 }/* slist_push_list */
+
+struct slist_list *slist_append_list(struct slist_list *list,
+				     struct slist_list *s_list)
+{
+	if ( !list || !s_list || !s_list->head )
+		return NULL;
+
+	struct slist_node *iter = list->head;
+
+	if ( !list->head ) {
+		list->head = s_list->head;
+		list->count = s_list->count;
+		//empty s_list
+		s_list->head = NULL;
+		s_list->count = 0;
+		return list;
+	}
+
+	//slip to end of list
+	while( NULL != iter->next )
+		iter = iter->next;
+
+	iter->next = s_list->head;
+	list->count += s_list->count;
+	//empty s_list
+	s_list->head = NULL;
+	s_list->count = 0;
+
+	return list;
+
+}/* slist_append_list */
