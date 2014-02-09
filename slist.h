@@ -383,7 +383,7 @@ struct slist_list *slist_append_list(struct slist_list *list,
  * ------- returned_list -> 5, 6, end
  * **************************************************************************
  *
- * passing invalid ['list' or 's_list']
+ * passing invalid ['list']
  * ------- results in undefined behavior
  */
 struct slist_list *slist_split_list(struct slist_list *list, void *key,
