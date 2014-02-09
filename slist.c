@@ -280,3 +280,17 @@ void slist_foreach_node(struct slist_list *list,
 	}
 
 }/* slist_foreach_node */
+
+struct slist_list *slist_delete_all_nodes(struct slist_list *list)
+{
+	if ( !list || !list->head )
+		return NULL;
+
+	while( NULL != list->head )
+	{
+		slist_delete_node(list, slist_pop_node(list));
+	}
+
+	return list;
+
+}/* slist_delete_all_nodes */
