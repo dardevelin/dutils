@@ -294,3 +294,33 @@ struct slist_list *slist_delete_all_nodes(struct slist_list *list)
 	return list;
 
 }/* slist_delete_all_nodes */
+
+struct slist_list *slist_reverse_list(struct slist_list *list)
+{
+	if ( !list || !list->head )
+		return NULL;
+
+	struct slist_node *head = list->head;
+	struct slist_node *prev = NULL;
+	struct slist_node *next = NULL;
+
+	while ( head )
+	{
+		//set the head as last node
+		list->head = head;
+		//save the heads next in next
+		next = head->next;
+		//change the next to previous
+		head->next = prev;
+		//set the current as previous
+		prev = head;
+		//set current as next
+		head = next;
+	}
+
+	//set new head and return
+	next = list->head;
+	list->head = next;
+
+	return list;
+}/* slist_reverse_list */
