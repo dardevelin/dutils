@@ -237,3 +237,29 @@ struct slist_node *slist_remove_node(struct slist_list *list, void *key,
 	return pnode;
 
 }/* slist_remove_node */
+
+struct slist_node *slist_remove_node_at(struct slist_list *list,
+					const size_t index)
+{
+	if ( !list || !list->head || index == 0 || index > list->count )
+		return NULL;
+
+	struct slist_node *head = list->head;
+	struct slist_node *prev = NULL;
+
+	size_t idx = 1;
+
+	if ( 1 == index )
+		return slist_pop_node(list);
+
+	do{
+		prev = head;
+		head = head->next;
+	}while( index > ++idx );
+
+	prev->next = head->next;
+	--list->count;
+
+	return head;
+
+}/* slist_remove_node_at */
