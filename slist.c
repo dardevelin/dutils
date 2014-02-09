@@ -263,3 +263,20 @@ struct slist_node *slist_remove_node_at(struct slist_list *list,
 	return head;
 
 }/* slist_remove_node_at */
+
+void slist_foreach_node(struct slist_list *list,
+			void *(*action)(void *carry, void *data, void *param),
+			void *param)
+{
+	if ( !list || !list->head || !action )
+		return;
+
+	struct slist_node *iter = NULL;
+	void *carry = NULL;
+
+	for(iter = list->head; NULL != iter; iter = iter->next)
+	{
+		carry = action(carry, iter->data, param);
+	}
+
+}/* slist_foreach_node */
