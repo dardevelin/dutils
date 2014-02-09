@@ -203,3 +203,37 @@ size_t slist_find_index_of(struct slist_list *list, void *key,
 
 	return idx;
 }/* slist_find_index_of */
+
+struct slist_node *slist_remove_node(struct slist_list *list, void *key,
+				     int (*cmp)(void *a, void *b))
+{
+	if ( !list || !list->head || !key || !cmp )
+		return NULL;
+
+	struct slist_node *iter;
+	struct slist_node *pnode;
+
+	//check found @ head
+	if ( 0 == cmp(list->head->data, key) ) {
+		pnode = list->head;
+		list->head = list->head->next;
+		--list->count;
+		return pnode;
+	}
+
+	for(iter = list->head; NULL != iter->next; iter = iter->next)
+	{
+		if ( 0 == cmp(iter->next->data, key) )
+			break;
+	}
+
+	//see if found a node
+	if ( !iter->next )
+		return NULL;
+
+	pnode = iter->next;
+	iter->next = pnode->next;
+	--list->count;
+	return pnode;
+
+}/* slist_remove_node */
