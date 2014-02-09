@@ -209,4 +209,20 @@ struct slist_node *slist_find_node(struct slist_list *list, void *key,
 size_t slist_find_index_of(struct slist_list *list, void *key,
 			   int (*cmp)(void *a, void *b));
 
+
+/* returns the 'node' matching the 'key' removing it
+ * returns NULL if 'list' is NULL
+ * returns NULL if 'list' is empty
+ * returns NULL if 'key' is NULL
+ * returns NULL if 'key' is no found
+ * returns NULL if 'cmp' is NULL
+ *
+ * ABOUT 'cmp': function needs to return 0 when 'a' and 'b' match
+ *
+ * passing invalid ['list' or 'key' or 'cmp']
+ * ------- results in undefined behavior
+ */
+struct slist_node *slist_remove_node(struct slist_list *list, void *key,
+				     int (*cmp)(void *a, void *b));
+
 #endif
