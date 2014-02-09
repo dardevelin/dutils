@@ -372,6 +372,7 @@ struct slist_list *slist_append_list(struct slist_list *list,
  * returns NULL if allocation of 'new list' fails
  *
  * ---info makes 'list' empty if 'key' matches @ head
+ * ---info the newly allocated list has to be freed. see slist_delete_list
  *
  * ABOUT cmp: function needs to return 0 when 'a' and 'b' match
  * example: *****************************************************************
@@ -397,6 +398,7 @@ struct slist_list *slist_split_list(struct slist_list *list, void *key,
  * returns NULL if allocation of 'new list' fails
  *
  * ---info makes 'list' empty if 'index' is 1/head
+ * ---info the newly allocated list has to be freed. see slist_delete_list
  *
  * ABOUT cmp: function needs to return 0 when 'a' and 'b' match
  * example: *****************************************************************
