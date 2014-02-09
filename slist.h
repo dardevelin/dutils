@@ -304,4 +304,34 @@ struct slist_list *slist_reverse_list(struct slist_list *list);
  */
 size_t slist_get_size(struct slist_list *list);
 
+
+/* returns 'list' after merging 's_list' into 'list' head.
+ * returns NULL if 'list' is NULL
+ * returns NULL if 's_list' is NULL
+ * returns NULL if 's_list' is empty
+ *
+ * ABOUT merging: 's_list' becomes empty after merge but still needs to
+ * ------- be manually freed. see slist_delete_list for that
+ * ------- if 'list' node_dalloc can't free
+ * ------- 's_list' allocated memory by it's node_alloc, the lists shouldn't
+ * ------- be merged before conversion since this may lead to memory leaks.
+ * ------- tip: use slist_foreach_node and just build a 'action' that makes
+ * ------- conversion if required.
+ * example: *****************************************************************
+ * ------- before merge
+ * -------  list  -> 4, 5, 6, end
+ * ------- s_list -> 1, 2, 3, end
+ * ------- ******************************************************************
+ * ------- after merge
+ * ------- list   ->  1, 2, 3, 4, 5, 6, end
+ * ------- s_list -> end
+ * **************************************************************************
+ *
+ * passing invalid ['list' or 's_list']
+ * ------- results in undefined behavior
+ */
+struct slist_list *slist_push_list(struct slist_list *list,
+				   struct slist_list *s_list);
+
+
 #endif
