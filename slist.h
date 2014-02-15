@@ -120,7 +120,6 @@ void slist_print_node(const struct slist_node *node,
 
 
 /* deletes 'node'
- * ------- returned 'node' needs to be freed
  * attempts to delete 'data' when 'data_dalloc' is set.
  * passing NULL in 'list' returns with no operation executed
  * passing NULL in 'node' returns with no operation executed
