@@ -23,14 +23,7 @@
 #include <assert.h>
 
 #define LOUD
-/****************************************************************************
- * configure messages
- ****************************************************************************/
-#ifdef LOUD
-#define wmsg(...) fprintf(stderr,__VA_ARGS__);
-#else
-#define wmsg(...)
-#endif
+#include "common.h"
 
 /****************************************************************************
  * helper functions used by the tests
