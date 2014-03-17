@@ -1,0 +1,38 @@
+slist ----------
+add support for raw slists.
+
+what is considered a raw slist?
+
+A raw slist does not perform any kind of 'list (as a container)' management.
+This means that the first node acts like the head of the list,
+and the push, pop, append, remove, find operations don't rely on any
+kind of information that is usually stored in as slist.
+
+This set of 'raw' functions for slist operations, should be able
+to manipulate an slist->head, however this would evidentially require for
+the user to manually manage the slist in order to maintain the behavior of
+slist common functions.
+
+NOTE: consider implementing in one of the following ways:
+1) less likely {
+   add macro flags, which simply strip slist operations
+}
+
+2) likely {
+   add raw slist structure and a union structure, making raw functions
+   take the union and let them find which structure was passed.
+}
+
+3) likely (more then 2) {
+   refactor slist to add a raw slist , this would then allow for
+   raw functions be able to safely cast slist into a raw slist and
+   perform their operations.
+}
+
+4) more likely (
+   add raw slist structure and make raw functions take an
+   argument which acts like a flag, that determines which type
+   of node was passed, and then act acordingly
+}
+
+----------------
