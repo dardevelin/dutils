@@ -20,6 +20,11 @@
 #ifndef DUTILS_COMMON_H_
 #define DUTILS_COMMON_H_
 
+//libraries used by helper functions
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
 /****************************************************************************
  * configure messages
  ****************************************************************************/
@@ -29,6 +34,19 @@
 #define wmsg(...)
 #endif
 
+void *int_copy(int n);
+
+void int_dalloc(void *data);
+
+void *action_test(void *carry, void *data, void *param);
+
+void *action_reverse_print_test(void *carry, void *data, void *param);
+
+//helper global variable for print_test
+extern int print_test_global;
+void print_test(void *data);
+
+int cmp_int(void *a, void *b);
 
 #endif
 
