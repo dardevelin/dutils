@@ -397,6 +397,77 @@ int main(int argc, char **argv)
 
 	{
 		wmsg("dlist_remove_node_at");
+		struct dlist_list *list;
+		struct dlist_node *node;
+		list = dlist_new_list(NULL, NULL);
+		node = dlist_new_node(list, int_copy(10), int_dalloc);
+		//test failures
+		//no list and lower bounds
+		assert( NULL == dlist_remove_node_at(NULL, 0) );
+		//no list higher bounds
+		assert( NULL == dlist_remove_node_at(NULL, 100) );
+		//no list correct bounds
+		assert( NULL == dlist_remove_node_at(NULL, 1) );
+		//empty list lower bounds
+		assert( NULL == dlist_remove_node_at(list, 0) );
+		//empty list higher bounds
+		assert( NULL == dlist_remove_node_at(list, 100) );
+		//empty list correct bounds
+		assert( NULL == dlist_remove_node_at(list, 1) );
+		dlist_push_node(list, node);
+		//non empty list lower bounds
+		assert( NULL == dlist_remove_node_at(list, 0) );
+		//non empty list higher bounds
+		assert( NULL == dlist_remove_node_at(list, 100) );
+		//test found @ index 1
+		node = NULL;
+		assert( (node = list_remove_node_at(list, 1)) );
+		assert( 0 == dlist->count );
+		assert( NULL == list->head );
+		assert( NULL == list->tail );
+		assert( 10 == *(int*)node->data );
+		//push back for further testing
+		dlist_push_node(list, node);
+		//add some more nodes to test other scenarios
+		node = dlist_new_node(list, int_copy(9), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(8), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(7), int_dalloc);
+		dlist_push_node(list, node);
+		//after all pushes 10 is tail and is the 4 index
+		//test remove at tail/last index
+		node = NULL;
+		assert( (node = dlist_remove_node_at(list, 4)) );
+		assert( 3 == list->count );
+		assert( NULL == list->head->next->next->next->next );
+		assert( NULL == list->tail->next );
+		assert( 9 == *(int*)list->tail->data );
+		assert( list->tail == list->head->next->next->next );
+		assert( 10 == *(int*)node->data );
+		//append our node back for now
+		dlist_append_node(list, node);
+		//test common :middle:
+		node = NULL;
+		assert( (node = dlist_remove_node_at(list, 2)) );
+		assert( 3 == list->count );
+		assert( 8 == *(int*)node->data );
+		//see if it was really removed
+		assert( node != list->head->next );
+		assert( list->head == list->head->next->prev );
+		dlist_delete_node(list, node);
+		//there are 3 nodes
+		node = dlist_pop_node(list);
+		dlist_delete_node(list, node);
+
+		node = dlist_pop_node(list);
+		dlist_delete_node(list, node);
+
+		node = dlist_pop_node(list);
+		dlist_delete_node(list, node);
+
+		dlist_delete_list(list);
+		
 		wmsg("[OK]\n");
 	}
 
