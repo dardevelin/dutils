@@ -473,6 +473,34 @@ int main(int argc, char **argv)
 
 	{
 		wmsg("dlist_foreach_node");
+		struct dlist_list *list;
+		struct dlist_node *node;
+		list = dlist_new_list(NULL, NULL);
+		//create some nodes to test
+		node = dlist_new_node(list, int_copy(10), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(9), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(8), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(7), int_dalloc);
+		dlist_push_node(list, node);
+
+		dlist_foreach_node(list, action_test, NULL);
+		//clean up
+		node = dlist_pop_node(list);
+		dlist_delete_node(list);
+
+		node = dlist_pop_node(list);
+		dlist_delete_node(list);
+
+		node = dlist_pop_node(list);
+		dlist_delete_node(list);
+
+		node = dlist_pop_node(list);
+		dlist_delete_node(list);
+
+		dlist_delete_list(list);
 		wmsg("[OK]\n");
 	}
 
