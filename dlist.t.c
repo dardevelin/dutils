@@ -674,6 +674,79 @@ int main(int argc, char **argv)
 
 	{
 		wmsg("dlist_split_list");
+		struct dlist_list *list;
+		struct dlist_list *n_list;
+		struct dlist_node *node;
+		void *key;
+		list = dlist_new_list(NULL, NULL);
+		key = int_copy(6);
+		//test failures
+		assert( NULL == dlist_split_list(NULL, NULL, NULL) );
+		assert( NULL == dlist_split_list(list, NULL, NULL) );
+		assert( NULL == dlist_split_list(NULL, key, NULL) );
+		assert( NULL == dlist_split_list(NULL, NULL, cmp_int) );
+		assert( NULL == dlist_split_list(list, key, NULL) );
+		assert( NULL == dlist_split_list(NULL, key, cmp_int) );
+		//test empty
+		assert( NULL == dlist_split_list(list, key, cmp_int) );
+		//create node for testing
+		node = dlist_new_node(list, int_copy(6), int_dalloc);
+		dlist_push_node(list, node);
+		//test found @ head and split;
+		assert( (n_list = dlist_split_list(list, key, cmp_int)) );
+		//check the list is indeed empty
+		assert( NULL == list->head );
+		assert( NULL == list->tail );
+		assert( 0 == list->count );
+		//check n_list has all data properly set
+		assert( NULL != n_list->head );
+		assert( 1 == n_list->count );
+		assert( 6 == *(int*)n_list->head->data );
+
+		dlist_delete_all_nodes(n_list);
+		dlist_delete_list(n_list);
+		n_list = NULL;
+		node = NULL;
+
+		//build some nodes for further testing
+		node = dlist_new_node(list, int_copy(6), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(5), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(4), int_dalloc);
+		dlist_push_node(list, node);
+		//test end/tail split
+		assert( (n_list = dlist_split_list(list, key, cmp_int)) );
+		//check list was properly split
+		assert( NULL == list->head->next->next );
+		assert( 2 == list->count );
+		//check n_list has all data properly set
+		assert( NULL != n_list->head );
+		assert( 1 == n_list->count );
+		assert( 6 == *(int*)n_list->head->data );
+		//save the node in 'list' for further testing
+		node = dlist_pop_node(n_list);
+		dlist_append_node(list, node);
+
+		dlist_delete_list(n_list);
+		n_list = NULL;
+		//edit key to test common :middle: split
+		*(int*)key = 5;
+		//the test
+		assert( (n_list = dlist_split_list(list, key, cmp_int)) );
+		//check list has everything properly set
+		assert( 1 == list->count );
+		assert( 4 == *(int*)list->head->data );
+		//check n_list has everything properly set
+		assert( NULL != n_list->head );
+		assert( 2 == n_list->count );
+		assert( 5 == *(int*)n_list->head->data );
+		assert( 6 == *(int*)n_list->head->next->data );
+		//check if heads and tails are properly terminated
+		assert( NULL == list->head->prev );
+		assert( NULL == list->tail->next );
+		assert( NULL == n_list->head->prev );
+		assert( NULL == n_list->tail->next );
 		wmsg("[OK]\n");
 	}
 
