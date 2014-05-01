@@ -506,6 +506,30 @@ int main(int argc, char **argv)
 
 	{
 		wmsg("dlist_delete_all_nodes");
+		struct dlist_list *list;
+		struct dlist_node *node;
+		list = dlist_new_node(NULL, NULL);
+		//test failures
+		assert( NULL == dlist_delete_all_nodes(NULL) );
+		//test empty
+		assert( NULL == dlist_delete_all_nodes(list) );
+		//create some nodes for further testing
+		node = dlist_new_node(list, int_copy(10), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(9), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(8), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(7), int_dalloc);
+		dlist_push_node(list, node);
+
+		assert( NULL != dlist_delete_all_nodes(list) );
+		assert( NULL == list->head );
+		assert( NULL == list->tail );
+		assert( 0 == list->count );
+
+		dlist_delete_list(list);
+		
 		wmsg("[OK]\n");
 	}
 
