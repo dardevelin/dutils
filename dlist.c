@@ -37,6 +37,12 @@ struct dlist_list *dlist_new_list(void *(*node_alloc)(size_t),
 }/* dlist_new_list */
 
 
+struct dlist_node *dlist_new_node(struct dlist_list *list,
+				  void *data, void (*dalloc)(void *))
+{
+}/* dlist_new_node */
+
+
 inline void dlist_print_node(const struct dlist_node *node,
 			     void (*print)(void *))
 {
