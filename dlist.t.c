@@ -535,6 +535,27 @@ int main(int argc, char **argv)
 
 	{
 		wmsg("dlist_reverse_list");
+		struct dlist_list *list;
+		struct dlist_node *node;
+		list = dlist_new_list(NULL, NULL);
+		//test failures
+		assert( NULL == dlist_reverse_list(NULL) );
+		//test empty
+		assert( NULL == dlist_reverse_list(list) );
+
+		for(int i=1000; 0 < i; --i)
+		{
+			node = dlist_new_node(list, int_copy(i), int_dalloc);
+			dlist_push_node(list, node);
+		}
+
+		//execute
+		assert( NULL != dlist_reverse_list(list) );
+		//do the actual test, set to silent
+		dlist_foreach_node(list, action_reverse_print_test, NULL);
+		//clean up
+		dlist_delete_all_nodes(list);
+		dlist_delete_list(list);
 		wmsg("[OK]\n");
 	}
 
