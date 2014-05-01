@@ -347,7 +347,7 @@ int main(int argc, char **argv)
 		dlist_push_node(list, node);
 		//test found @ head
 		node = NULL;
-		assert( NULL == dlist_remove_node(list, key, cmp_int) );
+		assert( (node = dlist_remove_node(list, key, cmp_int)) );
 		assert( 0 == list->count );
 		assert( NULL == list->head );
 		assert( NULL == list->tail );
