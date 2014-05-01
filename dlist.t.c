@@ -565,7 +565,7 @@ int main(int argc, char **argv)
 	}
 
 	{
-		wmsg("dlist_psuh_list");
+		wmsg("dlist_push_list");
 		wmsg("[OK]\n");
 	}
 
