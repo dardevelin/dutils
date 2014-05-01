@@ -561,6 +561,14 @@ int main(int argc, char **argv)
 
 	{
 		wmsg("dlist_get_size");
+		struct dlist_list *list;
+		struct dlist_node *node;
+		list = dlist_new_list(NULL, NULL);
+		node = dlist_new_node(list, int_copy(10), int_dalloc);
+		dlist_push_node(list, node);
+		assert( 1 == list->count && 1 == dlist_get_size(list) );
+		dlist_delete_node(list, dlist_pop_node(list));
+		dlist_delete_list(list);
 		wmsg("[OK]\n");
 	}
 
