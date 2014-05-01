@@ -613,6 +613,8 @@ int main(int argc, char **argv)
 		//check if merge points are properly linked
 		assert( 4 == *(int*) list->head->next->next->next->next->data );
 		assert( 3 == *(int*) list->tail->prev->prev->prev->prev->data );
+		//check new list count
+		assert( 6 == list->count );
 
 		dlist_delete_all_nodes(list);
 		dlist_delete_list(list);
@@ -622,6 +624,51 @@ int main(int argc, char **argv)
 
 	{
 		wmsg("dlist_append_list");
+		struct dlist_list *list;
+		struct dlist_list *s_list;
+		struct dlist_node *node;
+		list = dlist_new_list(NULL, NULL);
+		s_list = dlist_new_list(NULL, NULL);
+		//test failures
+		assert( NULL == dlist_append_list(NULL, NULL) );
+		assert( NULL == dlist_append_list(list, NULL) );
+		assert( NULL == dlist_append_list(NULL, s_list) );
+		//test empty
+		assert( NULL == dlist_append_list(list, s_list) );
+		//build the list to test 'proper behavior'
+		//list
+		node = dlist_new_node(list, int_copy(6), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(5), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(4), int_dalloc);
+		dlist_push_node(list, node);
+		//s_list
+		node = dlist_new_node(s_list, int_copy(3), int_dalloc);
+		dlist_push_node(s_list, node);
+		node = dlist_new_node(s_list, int_copy(2), int_dalloc);
+		dlist_push_node(s_list, node);
+		node = dlist_new_node(s_list, int_copy(1), int_dalloc);
+		dlist_push_node(s_list, node);
+		//test
+		assert( NULL != dlist_append_list(list, s_list) );
+		//confirm that s_list is now empty
+		assert( NULL == s_list->head );
+		assert( 0 == s_list->count );
+		//confirm that the merge was properly done
+		//check for list head (should be the same)
+		assert( 4 == *(int*)list->head->data );
+		//check for tail (should be the old tail of s_list)
+		assert( 3 == *(int*)list->tail->data );
+		//check if merge points are properly linked
+		assert( 1 == *(int*) list->head->next->next->next->next->data );
+		assert( 6 == *(int*) list->tail->prev->prev->prev->prev->data );
+		//check new list size
+		assert( 6 == list->count );
+
+		dlist_delete_all_nodes(list);
+		dlist_delete_list(list);
+		dlist_delete_list(s_list);
 		wmsg("[OK]\n");
 	}
 
