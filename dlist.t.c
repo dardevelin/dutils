@@ -467,7 +467,7 @@ int main(int argc, char **argv)
 		dlist_delete_node(list, node);
 
 		dlist_delete_list(list);
-		
+
 		wmsg("[OK]\n");
 	}
 
@@ -529,7 +529,7 @@ int main(int argc, char **argv)
 		assert( 0 == list->count );
 
 		dlist_delete_list(list);
-		
+
 		wmsg("[OK]\n");
 	}
 
@@ -574,6 +574,49 @@ int main(int argc, char **argv)
 
 	{
 		wmsg("dlist_push_list");
+		struct dlist_list *list;
+		struct dlist_list *s_list;
+		struct dlist_node *node;
+		list = dlist_new_list(NULL, NULL);
+		s_list = dlist_new_list(NULL; NULL);
+		//test failures
+		assert( NULL == dlist_push_list(NULL, NULL) );
+		assert( NULL == dlist_push_list(list, NULL) );
+		assert( NULL == dlist_push_list(NULL, s_list) );
+		//test empty
+		assert( NULL == dlist_push_list(list, s_list) );
+		//build the lists to test 'proper behavior'
+		//list
+		node = dlist_new_node(list, int_copy(6), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(5), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(4), int_dalloc);
+		dlist_push_node(list, node);
+		//s_list
+		node = dlist_new_node(list, int_copy(3), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(2), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(1), int_dalloc);
+		dlist_push_node(list, node);
+		//test
+		assert( NULL != dlist_push_list(list, s_list) );
+		//confirm that s_list is now empty
+		assert( NULL == s_list->head );
+		assert( 0 == s_list->count );
+		//confirm that the merge was properly done
+		//check for new list head (should be 1)
+		assert( 1 == *(int*) list->head->data );
+		//check for new list tail (should be 6)
+		assert( 6 == *(int*) list->tail->data );
+		//check if merge points are properly linked
+		assert( 4 == *(int*) list->head->next->next->next->next->data );
+		assert( 3 == *(int*) list->tail->prev->prev->prev->prev->data );
+
+		dlist_delete_all_nodes(list);
+		dlist_delete_list(list);
+		dlist_delete_list(s_list);
 		wmsg("[OK]\n");
 	}
 
