@@ -421,7 +421,7 @@ int main(int argc, char **argv)
 		assert( NULL == dlist_remove_node_at(list, 100) );
 		//test found @ index 1
 		node = NULL;
-		assert( (node = list_remove_node_at(list, 1)) );
+		assert( (node = dlist_remove_node_at(list, 1)) );
 		assert( 0 == dlist->count );
 		assert( NULL == list->head );
 		assert( NULL == list->tail );
@@ -722,6 +722,7 @@ int main(int argc, char **argv)
 		assert( 2 == list->count );
 		//check n_list has all data properly set
 		assert( NULL != n_list->head );
+		assert( NULL != n_list->tail );
 		assert( 1 == n_list->count );
 		assert( 6 == *(int*)n_list->head->data );
 		//save the node in 'list' for further testing
@@ -752,6 +753,75 @@ int main(int argc, char **argv)
 
 	{
 		wmsg("dlist_split_list_at");
+		struct dlist_list *list;
+		struct dlist_list *n_list;
+		struct dlist_node *node;
+		list = dlist_new_list(NULL, NULL);
+		node = dlist_new_node(list, int_copy(6), int_dalloc);
+		//test failures
+		//no list and lower bounds
+		assert( NULL == dlist_split_list_at(NULL, 0) );
+		//no list and higher bounds
+		assert( NULL == dlist_split_list_at(NULL, 100) );
+		//no list correct bounds
+		assert( NULL == dlist_split_list_at(NULL, 1) );
+		//empty list lower bounds
+		assert( NULL == dlist_split_list_at(list, 0) );
+		//empty list higher bounds
+		assert( NULL == dlist_split_list_at(list, 100) );
+		//empty list correct bounds
+		assert( NULL == dlist_split_list_at(list, 1) );
+		dlist_push_node(list, node);
+		//non empty list lower bounds
+		assert( NULL == dlist_split_list_at(list, 0) );
+		//non empty list higher bounds
+		assert( NULL == dlist_split_list_at(list, 100) );
+		//test found @ index 1
+		node = NULL;
+		assert( (n_list = dlist_split_list_at(list, 1)) );
+		//check list is indeed empty
+		assert( NULL == list->head );
+		assert( NULL == list->tail );
+		assert( 0 == list->count );
+		//check n_list has all data properly set
+		assert( NULL != n_list->head );
+		assert( NULL != n_list->tail );
+		assert( 1 == n_list->count );
+		assert( 6 == *(int*)n_list->head->data );
+		//move all data back to list and test next scenarios
+		list->head = n_list->head;
+		list->tail = n_list->tail;
+		list->count = n_list->count;
+
+		dlist_delete_list(n_list);
+		n_list = NULL;
+
+		//create some nodes for further testing
+		node = dlist_new_node(list, int_copy(5), int_dalloc);
+		dlist_push_node(list, node);
+		node = dlist_new_node(list, int_copy(4), int_dalloc);
+		dlist_push_node(list, node);
+		//test index at end/tail
+		assert( (n_list = dlist_split_list_at(list, 3)) );
+		//check list has everything properly set
+		assert( NULL != list->head );
+		assert( NULL != list->tail );
+		assert( NULL == list->head->prev );
+		assert( NULL == list->tail->next );
+		assert( 2 == list->count );
+		assert( 5 == *(int*) list->head->next->data );
+		//check that n_list has everything properly set
+		assert( NULL != n_list->head );
+		assert( NULL != n_list->tail );
+		assert( NULL == n_list->head->prev );
+		assert( NULL == n_list->tail->next );
+		assert( 1 == n_list->count );
+		assert( 4 == *(int*)n_list->head->data );
+
+		dlist_delete_all_nodes(list);
+		dlist_delete_all_nodes(n_list);
+		dlist_delete_list(list);
+		dlist_delete_list(n_list);
 		wmsg("[OK]\n");
 	}
 
