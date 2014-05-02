@@ -335,7 +335,7 @@ void dlist_node_foreach(struct dlist_list *list,
 }/* dlist_node_foreach */
 
 
-struct dlist_list *dlist_nodes_delete_all(struct dlist_list *list)
+struct dlist_list *dlist_list_delete_all_nodes(struct dlist_list *list)
 {
 	if ( !list || !list->head )
 		return NULL;
@@ -344,7 +344,7 @@ struct dlist_list *dlist_nodes_delete_all(struct dlist_list *list)
 		dlist_node_delete(list, dlist_node_pop(list));
 
 	return list;
-}/* dlist_nodes_delete_all */
+}/* dlist_list_delete_all_nodes */
 
 
 struct dlist_list *dlist_list_reverse(struct dlist_list *list)

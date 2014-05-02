@@ -281,7 +281,7 @@ void slist_node_foreach(struct slist_list *list,
 
 }/* slist_node_foreach */
 
-struct slist_list *slist_nodes_delete_all(struct slist_list *list)
+struct slist_list *slist_list_delete_all_nodes(struct slist_list *list)
 {
 	if ( !list || !list->head )
 		return NULL;
@@ -293,7 +293,7 @@ struct slist_list *slist_nodes_delete_all(struct slist_list *list)
 
 	return list;
 
-}/* slist_nodes_delete_all */
+}/* slist_list_delete_all_nodes */
 
 struct slist_list *slist_list_reverse(struct slist_list *list)
 {

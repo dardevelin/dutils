@@ -506,14 +506,14 @@ int main(int argc, char **argv)
 	}
 
 	{
-		wmsg("dlist_nodes_delete_all");
+		wmsg("dlist_list_delete_all_nodes");
 		struct dlist_list *list;
 		struct dlist_node *node;
 		list = dlist_list_new(NULL, NULL);
 		//test failures
-		assert( NULL == dlist_nodes_delete_all(NULL) );
+		assert( NULL == dlist_list_delete_all_nodes(NULL) );
 		//test empty
-		assert( NULL == dlist_nodes_delete_all(list) );
+		assert( NULL == dlist_list_delete_all_nodes(list) );
 		//create some nodes for further testing
 		node = dlist_node_new(list, int_copy(10), int_dalloc);
 		dlist_node_push(list, node);
@@ -524,7 +524,7 @@ int main(int argc, char **argv)
 		node = dlist_node_new(list, int_copy(7), int_dalloc);
 		dlist_node_push(list, node);
 
-		assert( NULL != dlist_nodes_delete_all(list) );
+		assert( NULL != dlist_list_delete_all_nodes(list) );
 		assert( NULL == list->head );
 		assert( NULL == list->tail );
 		assert( 0 == list->count );
@@ -555,7 +555,7 @@ int main(int argc, char **argv)
 		//do the actual test, set to silent
 		dlist_node_foreach(list, action_reverse_print_test, NULL);
 		//clean up
-		dlist_nodes_delete_all(list);
+		dlist_list_delete_all_nodes(list);
 		dlist_list_delete(list);
 		wmsg("[OK]\n");
 	}
@@ -617,7 +617,7 @@ int main(int argc, char **argv)
 		//check new list count
 		assert( 6 == list->count );
 
-		dlist_nodes_delete_all(list);
+		dlist_list_delete_all_nodes(list);
 		dlist_list_delete(list);
 		dlist_list_delete(s_list);
 		wmsg("[OK]\n");
@@ -673,7 +673,7 @@ int main(int argc, char **argv)
 		//check new list size
 		assert( 6 == list->count );
 
-		dlist_nodes_delete_all(list);
+		dlist_list_delete_all_nodes(list);
 		dlist_list_delete(list);
 		dlist_list_delete(s_list);
 		wmsg("[OK]\n");
@@ -710,7 +710,7 @@ int main(int argc, char **argv)
 		assert( 1 == n_list->count );
 		assert( 6 == *(int*)n_list->head->data );
 
-		dlist_nodes_delete_all(n_list);
+		dlist_list_delete_all_nodes(n_list);
 		dlist_list_delete(n_list);
 		n_list = NULL;
 		node = NULL;
@@ -825,8 +825,8 @@ int main(int argc, char **argv)
 		assert( 1 == n_list->count );
 		assert( 6 == *(int*)n_list->head->data );
 
-		dlist_nodes_delete_all(list);
-		dlist_nodes_delete_all(n_list);
+		dlist_list_delete_all_nodes(list);
+		dlist_list_delete_all_nodes(n_list);
 		dlist_list_delete(list);
 		dlist_list_delete(n_list);
 		wmsg("[OK]\n");

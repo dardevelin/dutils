@@ -144,7 +144,7 @@ void dlist_node_delete(struct dlist_list *list,
  * passing NULL in 'list' returns with no operation executed
  *
  * NOTE: deleting the 'list' won't free the 'nodes' contained in it.
- * ------- see dlist_nodes_delete_all for that.
+ * ------- see dlist_list_delete_all_nodes for that.
  *
  * passing invalid ['list']
  * ------- results in undefined behavior
@@ -288,7 +288,7 @@ void dlist_node_foreach(struct dlist_list *list,
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
-struct dlist_list *dlist_nodes_delete_all(struct dlist_list *list);
+struct dlist_list *dlist_list_delete_all_nodes(struct dlist_list *list);
 
 
 /* returns 'list' reversed

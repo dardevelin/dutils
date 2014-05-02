@@ -135,7 +135,7 @@ void slist_node_delete(struct slist_list *list,
  * passing NULL in 'list' returns with no operation executed
  *
  * NOTE: deleting the 'list0 won't free the nodes contained in it.
- * ------- see slist_nodes_delete_all for that.
+ * ------- see slist_list_delete_all_nodes for that.
  *
  * passing invalid ['list']
  * ------- results in undefined behavior
@@ -272,7 +272,7 @@ void slist_node_foreach(struct slist_list *list,
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
-struct slist_list *slist_nodes_delete_all(struct slist_list *list);
+struct slist_list *slist_list_delete_all_nodes(struct slist_list *list);
 
 
 /* returns 'list' reversed

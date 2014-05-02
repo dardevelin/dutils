@@ -491,14 +491,14 @@ int main(int argc, char **argv)
 	}
 
 	{
-		wmsg("slist_nodes_delete_all");
+		wmsg("slist_list_delete_all_nodes");
 		struct slist_list *list;
 		struct slist_node *node;
 		list = slist_list_new(NULL, NULL);
 		//test failures
-		assert( NULL == slist_nodes_delete_all(NULL) );
+		assert( NULL == slist_list_delete_all_nodes(NULL) );
 		//test empty
-		assert( NULL == slist_nodes_delete_all(list) );
+		assert( NULL == slist_list_delete_all_nodes(list) );
 		//create some nodes for further testing
 		node = slist_node_new(list, int_copy(10), int_dalloc);
 		slist_node_push(list,node);
@@ -508,7 +508,7 @@ int main(int argc, char **argv)
 		slist_node_push(list,node);
 		node = slist_node_new(list, int_copy(7), int_dalloc);
 		slist_node_push(list,node);
-		assert( NULL != slist_nodes_delete_all(list) );
+		assert( NULL != slist_list_delete_all_nodes(list) );
 		assert( NULL == list->head );
 		assert( 0 == list->count );
 		//clean up
@@ -537,7 +537,7 @@ int main(int argc, char **argv)
 		//do the actual test , set to silent
 		slist_node_foreach(list, action_reverse_print_test, NULL);
 		//clean up
-		slist_nodes_delete_all(list);
+		slist_list_delete_all_nodes(list);
 		slist_list_delete(list);
 		wmsg("[OK]\n");
 	}
@@ -595,7 +595,7 @@ int main(int argc, char **argv)
 		//check if 3 node points to 'list' old head
 		assert( 4 == *(int*)list->head->next->next->next->data );
 		//clean up
-		slist_nodes_delete_all(list);
+		slist_list_delete_all_nodes(list);
 		slist_list_delete(list);
 		slist_list_delete(s_list);
 		wmsg("[OK]\n");
@@ -640,7 +640,7 @@ int main(int argc, char **argv)
 		//check if 3 node points to 's_list' old head
 		assert( 1 == *(int*)list->head->next->next->next->data );
 		//clean up
-		slist_nodes_delete_all(list);
+		slist_list_delete_all_nodes(list);
 		slist_list_delete(list);
 		slist_list_delete(s_list);
 		wmsg("[OK]\n");
@@ -676,7 +676,7 @@ int main(int argc, char **argv)
 		assert( 1 == n_list->count );
 		assert( 6 == *(int*)n_list->head->data );
 		//quick clean up
-		slist_nodes_delete_all(n_list);
+		slist_list_delete_all_nodes(n_list);
 		slist_list_delete(n_list);
 		n_list = NULL;
 		node = NULL;
@@ -714,8 +714,8 @@ int main(int argc, char **argv)
 		assert( 6 == *(int*)n_list->head->next->data );
 		assert( NULL == n_list->head->next->next );
 		//clean up
-		slist_nodes_delete_all(list);
-		slist_nodes_delete_all(n_list);
+		slist_list_delete_all_nodes(list);
+		slist_list_delete_all_nodes(n_list);
 		slist_list_delete(list);
 		slist_list_delete(n_list);
 		int_dalloc(key);
@@ -786,8 +786,8 @@ int main(int argc, char **argv)
 		assert( 5 == *(int*)n_list->head->data );
 		assert( NULL == n_list->head->next->next );
 		//clean up
-		slist_nodes_delete_all(list);
-		slist_nodes_delete_all(n_list);
+		slist_list_delete_all_nodes(list);
+		slist_list_delete_all_nodes(n_list);
 		slist_list_delete(list);
 		slist_list_delete(n_list);
 		wmsg("[OK]\n");
