@@ -44,10 +44,10 @@ int main(int argc, char **argv)
 	}
 
 	{
-		wmsg("dlist_new_list");
+		wmsg("dlist_list_new");
 
 		struct dlist_list *list = NULL;
-		assert( (list = dlist_new_list(NULL, NULL)) );
+		assert( (list = dlist_list_new(NULL, NULL)) );
 		assert( 0 == list->count );
 		assert( NULL == list->head );
 		assert( NULL == list->tail );
@@ -59,14 +59,14 @@ int main(int argc, char **argv)
 	}
 
 	{
-		wmsg("dlist_new_node");
+		wmsg("dlist_node_new");
 
 		struct dlist_list *list;
 		struct dlist_node *node;
-		assert( (list = dlist_new_list(NULL, NULL)) );
-		assert( (node = dlist_new_node(list, NULL, NULL)) );
+		assert( (list = dlist_list_new(NULL, NULL)) );
+		assert( (node = dlist_node_new(list, NULL, NULL)) );
 		free(node);
-		assert( (node = dlist_new_node(list, int_copy(10), int_dalloc)) );
+		assert( (node = dlist_node_new(list, int_copy(10), int_dalloc)) );
 		assert( 10 == *(int*)node->data );
 		assert( !node->next );
 		assert( !node->prev );
@@ -79,15 +79,15 @@ int main(int argc, char **argv)
 	}
 
 	{
-		wmsg("dlist_print_node");
+		wmsg("dlist_node_print");
 
 		struct dlist_list *list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
-		assert( (node = dlist_new_node(list, int_copy(10), int_dalloc)) );
+		list = dlist_list_new(NULL, NULL);
+		assert( (node = dlist_node_new(list, int_copy(10), int_dalloc)) );
 		//set print_test_global helper global var to defaul value
 		print_test_global = -1;
-		dlist_print_node(node, print_test);
+		dlist_node_print(node, print_test);
 		assert( 0 == print_test_global );
 		free(node->data);
 		free(node);
@@ -97,43 +97,43 @@ int main(int argc, char **argv)
 	}
 
 	{
-		wmsg("dlist_delete_node");
+		wmsg("dlist_node_delete");
 
 		struct dlist_list *list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
-		assert( (node = dlist_new_node(list, int_copy(10), int_dalloc)) );
-		dlist_delete_node(list, node);
+		list = dlist_list_new(NULL, NULL);
+		assert( (node = dlist_node_new(list, int_copy(10), int_dalloc)) );
+		dlist_node_delete(list, node);
 		free(list);
 
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_delete_list");
+		wmsg("dlist_list_delete");
 
 		struct dlist_list *list;
-		list = dlist_new_list(NULL, NULL);
+		list = dlist_list_new(NULL, NULL);
 		assert( list );
-		dlist_delete_list(list);
+		dlist_list_delete(list);
 
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_push_node");
+		wmsg("dlist_node_push");
 
 		struct dlist_list *list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
-		node = dlist_new_node(list, int_copy(10), int_dalloc);
+		list = dlist_list_new(NULL, NULL);
+		node = dlist_node_new(list, int_copy(10), int_dalloc);
 
 		//test failures
-		assert( NULL == dlist_push_node(NULL, NULL) );
-		assert( NULL == dlist_push_node(list, NULL) );
-		assert( NULL == dlist_push_node(NULL, node) );
+		assert( NULL == dlist_node_push(NULL, NULL) );
+		assert( NULL == dlist_node_push(list, NULL) );
+		assert( NULL == dlist_node_push(NULL, node) );
 		//test working push
-		assert( dlist_push_node(list, node) );
+		assert( dlist_node_push(list, node) );
 		assert( 1 == list->count );
 		assert( list->head );
 		assert( list->tail );
@@ -143,26 +143,26 @@ int main(int argc, char **argv)
 		assert( 10 == *(int*)list->head->data );
 
 		node = NULL;
-		dlist_delete_node(list, list->head);
-		dlist_delete_list(list);
+		dlist_node_delete(list, list->head);
+		dlist_list_delete(list);
 
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_append_node");
+		wmsg("dlist_node_append");
 
 		struct dlist_list *list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
-		node = dlist_new_node(list, int_copy(10), int_dalloc);
+		list = dlist_list_new(NULL, NULL);
+		node = dlist_node_new(list, int_copy(10), int_dalloc);
 
 		//test failures
-		assert( NULL == dlist_append_node(NULL, NULL) );
-		assert( NULL == dlist_append_node(list, NULL) );
-		assert( NULL == dlist_append_node(NULL, node) );
+		assert( NULL == dlist_node_append(NULL, NULL) );
+		assert( NULL == dlist_node_append(list, NULL) );
+		assert( NULL == dlist_node_append(NULL, node) );
 		//test working append @ head
-		assert( dlist_append_node(list, node) );
+		assert( dlist_node_append(list, node) );
 		assert( 1 == list->count );
 		assert( list->head );
 		assert( list->tail );
@@ -171,106 +171,106 @@ int main(int argc, char **argv)
 		assert( list->head == list->tail );
 		assert( 10 == *(int*)list->head->data );
 		//create another node to test at end append
-		node = dlist_new_node(list, int_copy(11), int_dalloc);
+		node = dlist_node_new(list, int_copy(11), int_dalloc);
 		//test working append at end
-		assert( dlist_append_node(list, node) );
+		assert( dlist_node_append(list, node) );
 		assert( 2 == list->count );
 		assert( 11 == *(int*)list->head->next->data );
 		assert( list->tail != list->head );
 		assert( 11 == *(int*)list->tail->data );
 
-		dlist_delete_node(list, list->head->next);
-		dlist_delete_node(list, list->head);
-		dlist_delete_list(list);
+		dlist_node_delete(list, list->head->next);
+		dlist_node_delete(list, list->head);
+		dlist_list_delete(list);
 
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_pop_node");
+		wmsg("dlist_node_pop");
 
 		struct dlist_list *list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
-		node = dlist_new_node(list, int_copy(11), int_dalloc);
+		list = dlist_list_new(NULL, NULL);
+		node = dlist_node_new(list, int_copy(11), int_dalloc);
 
 		//test failures
-		assert( NULL == dlist_pop_node(NULL) );
-		assert( NULL == dlist_pop_node(list) );
+		assert( NULL == dlist_node_pop(NULL) );
+		assert( NULL == dlist_node_pop(list) );
 		//push node for further testing
-		dlist_push_node(list, node);
+		dlist_node_push(list, node);
 		//test pop
 		node = NULL;
-		assert( (node = dlist_pop_node(list)) );
+		assert( (node = dlist_node_pop(list)) );
 		assert( 0 == list->count );
 		assert( !list->head );
 		assert( !list->tail );
 
-		dlist_delete_node(list, node);
-		dlist_delete_list(list);
+		dlist_node_delete(list, node);
+		dlist_list_delete(list);
 
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_find_node");
+		wmsg("dlist_node_find");
 
 		struct dlist_list *list;
 		struct dlist_node *node;
 		void *key;
-		list = dlist_new_list(NULL, NULL);
-		node = dlist_new_node(list, int_copy(9), int_dalloc);
+		list = dlist_list_new(NULL, NULL);
+		node = dlist_node_new(list, int_copy(9), int_dalloc);
 		key = int_copy(9);
 
 		//test failures
-		assert( NULL == dlist_find_node(NULL, NULL, NULL) );
-		assert( NULL == dlist_find_node(list, NULL, NULL) );
-		assert( NULL == dlist_find_node(NULL, key, NULL) );
-		assert( NULL == dlist_find_node(NULL, NULL, cmp_int) );
-		assert( NULL == dlist_find_node(list, key, NULL) );
-		assert( NULL == dlist_find_node(list, NULL, cmp_int) );
-		assert( NULL == dlist_find_node(NULL, key, cmp_int) );
-		assert( NULL == dlist_find_node(list, key, cmp_int) );
+		assert( NULL == dlist_node_find(NULL, NULL, NULL) );
+		assert( NULL == dlist_node_find(list, NULL, NULL) );
+		assert( NULL == dlist_node_find(NULL, key, NULL) );
+		assert( NULL == dlist_node_find(NULL, NULL, cmp_int) );
+		assert( NULL == dlist_node_find(list, key, NULL) );
+		assert( NULL == dlist_node_find(list, NULL, cmp_int) );
+		assert( NULL == dlist_node_find(NULL, key, cmp_int) );
+		assert( NULL == dlist_node_find(list, key, cmp_int) );
 		//add node to list so we can test it
-		dlist_push_node(list, node);
+		dlist_node_push(list, node);
 		//test found @ head
 		node = NULL;
-		assert( (node = dlist_find_node(list, key, cmp_int)) );
+		assert( (node = dlist_node_find(list, key, cmp_int)) );
 		assert( 9 == *(int*)node->data );
 
 		//add some nodes to test other scenarios
-		node = dlist_new_node(list, int_copy(8), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(7), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(6), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_node_new(list, int_copy(8), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(7), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(6), int_dalloc);
+		dlist_node_push(list, node);
 		//after pushes 9 is tail, test found in tail
 		node = NULL;
-		assert( (node = dlist_find_node(list, key, cmp_int)) );
+		assert( (node = dlist_node_find(list, key, cmp_int)) );
 		assert( 9 == *(int*)node->data );
 		//edit key to test common :middle: found
 		*(int*)key = 8;
-		assert( (node = dlist_find_node(list, key, cmp_int)) );
+		assert( (node = dlist_node_find(list, key, cmp_int)) );
 		assert( 8 == *(int*)node->data );
 		//edit key to test not found
 		*(int*)key = 100;
 		//test not found
-		assert( NULL == dlist_find_node(list, key, cmp_int) );
+		assert( NULL == dlist_node_find(list, key, cmp_int) );
 		//yes a loop is nice, but lets do this
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 
-		dlist_delete_list(list);
+		dlist_list_delete(list);
 		int_dalloc(key);
 
 		wmsg("[OK]\n");
@@ -282,8 +282,8 @@ int main(int argc, char **argv)
 		struct dlist_list *list;
 		struct dlist_node *node;
 		void *key;
-		list = dlist_new_list(NULL, NULL);
-		node = dlist_new_node(list, int_copy(10), int_dalloc);
+		list = dlist_list_new(NULL, NULL);
+		node = dlist_node_new(list, int_copy(10), int_dalloc);
 		key = int_copy(10);
 
 		//test failures
@@ -295,16 +295,16 @@ int main(int argc, char **argv)
 		assert( 0 == dlist_find_index_of(NULL, key, cmp_int) );
 		assert( 0 == dlist_find_index_of(list, key, cmp_int) );
 		//add node for testing
-		dlist_push_node(list, node);
+		dlist_node_push(list, node);
 		//test found in head
 		assert( 1 == dlist_find_index_of(list, key, cmp_int) );
 		//add some more nodes to test other scenarios
-		node = dlist_new_node(list, int_copy(9), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(8), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(7), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_node_new(list, int_copy(9), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(8), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(7), int_dalloc);
+		dlist_node_push(list, node);
 		//after pushing all nodes, 10 should be index 4
 		assert( 4 == dlist_find_index_of(list, key, cmp_int) );
 		//edit key to test common :middle: found
@@ -314,132 +314,132 @@ int main(int argc, char **argv)
 		*(int*)key = 100;
 		assert( 0 == dlist_find_index_of(list, key, cmp_int) );
 		//clean
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
-		dlist_delete_list(list);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
+		dlist_list_delete(list);
 		int_dalloc(key);
 
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_remove_node");
+		wmsg("dlist_node_remove");
 
 		struct dlist_list *list;
 		struct dlist_node *node;
 		void *key;
-		list = dlist_new_list(NULL, NULL);
-		node = dlist_new_node(list, int_copy(10), int_dalloc);
+		list = dlist_list_new(NULL, NULL);
+		node = dlist_node_new(list, int_copy(10), int_dalloc);
 		key = int_copy(10);
 		//test failures
-		assert( NULL == dlist_remove_node(NULL, NULL, NULL) );
-		assert( NULL == dlist_remove_node(list, NULL, NULL) );
-		assert( NULL == dlist_remove_node(NULL, key, NULL) );
-		assert( NULL == dlist_remove_node(NULL, NULL, cmp_int) );
-		assert( NULL == dlist_remove_node(list, key, NULL) );
-		assert( NULL == dlist_remove_node(NULL, key, cmp_int) );
-		assert( NULL == dlist_remove_node(list, key, cmp_int) );
-		dlist_push_node(list, node);
+		assert( NULL == dlist_node_remove(NULL, NULL, NULL) );
+		assert( NULL == dlist_node_remove(list, NULL, NULL) );
+		assert( NULL == dlist_node_remove(NULL, key, NULL) );
+		assert( NULL == dlist_node_remove(NULL, NULL, cmp_int) );
+		assert( NULL == dlist_node_remove(list, key, NULL) );
+		assert( NULL == dlist_node_remove(NULL, key, cmp_int) );
+		assert( NULL == dlist_node_remove(list, key, cmp_int) );
+		dlist_node_push(list, node);
 		//test found @ head
 		node = NULL;
-		assert( (node = dlist_remove_node(list, key, cmp_int)) );
+		assert( (node = dlist_node_remove(list, key, cmp_int)) );
 		assert( 0 == list->count );
 		assert( NULL == list->head );
 		assert( NULL == list->tail );
 		assert( 10 == *(int*)node->data );
 		//push node back for further testing
-		dlist_push_node(list, node);
+		dlist_node_push(list, node);
 		//add some more nodes to test other scenarios
-		node = dlist_new_node(list, int_copy(9), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(8), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(7), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_node_new(list, int_copy(9), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(8), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(7), int_dalloc);
+		dlist_node_push(list, node);
 		//after all pushes 10 is tail
 		node = NULL;
-		assert( (node = dlist_remove_node(list, key, cmp_int)) );
+		assert( (node = dlist_node_remove(list, key, cmp_int)) );
 		assert( NULL == list->head->next->next->next );
 		assert( list->tail == list->head->next->next );
 		assert( 10 == *(int*) node->data );
 		//append node back for now
-		dlist_append_node(list, node);
+		dlist_node_append(list, node);
 		//edit key to test common :middle:
 		*(int*)key = 8;
-		assert( (node = dlist_remove_node(list, key, cmp_int)) );
+		assert( (node = dlist_node_remove(list, key, cmp_int)) );
 		assert( 8  == *(int*)node->data );
 		assert( 7  == *(int*)list->head->data );
 		assert( 9  == *(int*)list->head->next->data );
 		assert( 10 == *(int*)list->head->next->next->data );
 		assert( list->head->next->prev == list->head );
 
-		dlist_delete_node(list, node);
+		dlist_node_delete(list, node);
 
 		//edit key to test not found
 		*(int*)key = 100;
 		//test not found
-		assert( NULL == dlist_remove_node(list, key, cmp_int) );
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		assert( NULL == dlist_node_remove(list, key, cmp_int) );
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 		int_dalloc(key);
 
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_remove_node_at");
+		wmsg("dlist_node_remove_at");
 		struct dlist_list *list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
-		node = dlist_new_node(list, int_copy(10), int_dalloc);
+		list = dlist_list_new(NULL, NULL);
+		node = dlist_node_new(list, int_copy(10), int_dalloc);
 		//test failures
 		//no list and lower bounds
-		assert( NULL == dlist_remove_node_at(NULL, 0) );
+		assert( NULL == dlist_node_remove_at(NULL, 0) );
 		//no list higher bounds
-		assert( NULL == dlist_remove_node_at(NULL, 100) );
+		assert( NULL == dlist_node_remove_at(NULL, 100) );
 		//no list correct bounds
-		assert( NULL == dlist_remove_node_at(NULL, 1) );
+		assert( NULL == dlist_node_remove_at(NULL, 1) );
 		//empty list lower bounds
-		assert( NULL == dlist_remove_node_at(list, 0) );
+		assert( NULL == dlist_node_remove_at(list, 0) );
 		//empty list higher bounds
-		assert( NULL == dlist_remove_node_at(list, 100) );
+		assert( NULL == dlist_node_remove_at(list, 100) );
 		//empty list correct bounds
-		assert( NULL == dlist_remove_node_at(list, 1) );
-		dlist_push_node(list, node);
+		assert( NULL == dlist_node_remove_at(list, 1) );
+		dlist_node_push(list, node);
 		//non empty list lower bounds
-		assert( NULL == dlist_remove_node_at(list, 0) );
+		assert( NULL == dlist_node_remove_at(list, 0) );
 		//non empty list higher bounds
-		assert( NULL == dlist_remove_node_at(list, 100) );
+		assert( NULL == dlist_node_remove_at(list, 100) );
 		//test found @ index 1
 		node = NULL;
-		assert( (node = dlist_remove_node_at(list, 1)) );
+		assert( (node = dlist_node_remove_at(list, 1)) );
 		assert( 0 == list->count );
 		assert( NULL == list->head );
 		assert( NULL == list->tail );
 		assert( 10 == *(int*)node->data );
 		//push back for further testing
-		dlist_push_node(list, node);
+		dlist_node_push(list, node);
 		//add some more nodes to test other scenarios
-		node = dlist_new_node(list, int_copy(9), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(8), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(7), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_node_new(list, int_copy(9), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(8), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(7), int_dalloc);
+		dlist_node_push(list, node);
 		//after all pushes 10 is tail and is the 4 index
 		//test remove at tail/last index
 		node = NULL;
-		assert( (node = dlist_remove_node_at(list, 4)) );
+		assert( (node = dlist_node_remove_at(list, 4)) );
 		assert( 3 == list->count );
 		assert( NULL == list->head->next->next->next );
 		assert( NULL == list->tail->next );
@@ -447,116 +447,116 @@ int main(int argc, char **argv)
 		assert( list->tail == list->head->next->next );
 		assert( 10 == *(int*)node->data );
 		//append our node back for now
-		dlist_append_node(list, node);
+		dlist_node_append(list, node);
 		//test common :middle:
 		node = NULL;
-		assert( (node = dlist_remove_node_at(list, 2)) );
+		assert( (node = dlist_node_remove_at(list, 2)) );
 		assert( 3 == list->count );
 		assert( 8 == *(int*)node->data );
 		//see if it was really removed
 		assert( node != list->head->next );
 		assert( list->head == list->head->next->prev );
-		dlist_delete_node(list, node);
+		dlist_node_delete(list, node);
 		//there are 3 nodes
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 
-		dlist_delete_list(list);
+		dlist_list_delete(list);
 
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_foreach_node");
+		wmsg("dlist_node_foreach");
 		struct dlist_list *list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
+		list = dlist_list_new(NULL, NULL);
 		//create some nodes to test
-		node = dlist_new_node(list, int_copy(10), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(9), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(8), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(7), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_node_new(list, int_copy(10), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(9), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(8), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(7), int_dalloc);
+		dlist_node_push(list, node);
 
-		dlist_foreach_node(list, action_test, NULL);
+		dlist_node_foreach(list, action_test, NULL);
 		//clean up
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 
-		node = dlist_pop_node(list);
-		dlist_delete_node(list, node);
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
 
-		dlist_delete_list(list);
+		dlist_list_delete(list);
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_delete_all_nodes");
+		wmsg("dlist_nodes_delete_all");
 		struct dlist_list *list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
+		list = dlist_list_new(NULL, NULL);
 		//test failures
-		assert( NULL == dlist_delete_all_nodes(NULL) );
+		assert( NULL == dlist_nodes_delete_all(NULL) );
 		//test empty
-		assert( NULL == dlist_delete_all_nodes(list) );
+		assert( NULL == dlist_nodes_delete_all(list) );
 		//create some nodes for further testing
-		node = dlist_new_node(list, int_copy(10), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(9), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(8), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(7), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_node_new(list, int_copy(10), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(9), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(8), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(7), int_dalloc);
+		dlist_node_push(list, node);
 
-		assert( NULL != dlist_delete_all_nodes(list) );
+		assert( NULL != dlist_nodes_delete_all(list) );
 		assert( NULL == list->head );
 		assert( NULL == list->tail );
 		assert( 0 == list->count );
 
-		dlist_delete_list(list);
+		dlist_list_delete(list);
 
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_reverse_list");
+		wmsg("dlist_list_reverse");
 		struct dlist_list *list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
+		list = dlist_list_new(NULL, NULL);
 		//test failures
-		assert( NULL == dlist_reverse_list(NULL) );
+		assert( NULL == dlist_list_reverse(NULL) );
 		//test empty
-		assert( NULL == dlist_reverse_list(list) );
+		assert( NULL == dlist_list_reverse(list) );
 
 		for(int i=1000; 0 < i; --i)
 		{
-			node = dlist_new_node(list, int_copy(i), int_dalloc);
-			dlist_push_node(list, node);
+			node = dlist_node_new(list, int_copy(i), int_dalloc);
+			dlist_node_push(list, node);
 		}
 
 		//execute
-		assert( NULL != dlist_reverse_list(list) );
+		assert( NULL != dlist_list_reverse(list) );
 		//do the actual test, set to silent
-		dlist_foreach_node(list, action_reverse_print_test, NULL);
+		dlist_node_foreach(list, action_reverse_print_test, NULL);
 		//clean up
-		dlist_delete_all_nodes(list);
-		dlist_delete_list(list);
+		dlist_nodes_delete_all(list);
+		dlist_list_delete(list);
 		wmsg("[OK]\n");
 	}
 
@@ -564,45 +564,45 @@ int main(int argc, char **argv)
 		wmsg("dlist_get_size");
 		struct dlist_list *list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
-		node = dlist_new_node(list, int_copy(10), int_dalloc);
-		dlist_push_node(list, node);
+		list = dlist_list_new(NULL, NULL);
+		node = dlist_node_new(list, int_copy(10), int_dalloc);
+		dlist_node_push(list, node);
 		assert( 1 == list->count && 1 == dlist_get_size(list) );
-		dlist_delete_node(list, dlist_pop_node(list));
-		dlist_delete_list(list);
+		dlist_node_delete(list, dlist_node_pop(list));
+		dlist_list_delete(list);
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_push_list");
+		wmsg("dlist_list_push");
 		struct dlist_list *list;
 		struct dlist_list *s_list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
-		s_list = dlist_new_list(NULL, NULL);
+		list = dlist_list_new(NULL, NULL);
+		s_list = dlist_list_new(NULL, NULL);
 		//test failures
-		assert( NULL == dlist_push_list(NULL, NULL) );
-		assert( NULL == dlist_push_list(list, NULL) );
-		assert( NULL == dlist_push_list(NULL, s_list) );
+		assert( NULL == dlist_list_push(NULL, NULL) );
+		assert( NULL == dlist_list_push(list, NULL) );
+		assert( NULL == dlist_list_push(NULL, s_list) );
 		//test empty
-		assert( NULL == dlist_push_list(list, s_list) );
+		assert( NULL == dlist_list_push(list, s_list) );
 		//build the lists to test 'proper behavior'
 		//list
-		node = dlist_new_node(list, int_copy(6), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(5), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(4), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_node_new(list, int_copy(6), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(5), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(4), int_dalloc);
+		dlist_node_push(list, node);
 		//s_list
-		node = dlist_new_node(s_list, int_copy(3), int_dalloc);
-		dlist_push_node(s_list, node);
-		node = dlist_new_node(s_list, int_copy(2), int_dalloc);
-		dlist_push_node(s_list, node);
-		node = dlist_new_node(s_list, int_copy(1), int_dalloc);
-		dlist_push_node(s_list, node);
+		node = dlist_node_new(s_list, int_copy(3), int_dalloc);
+		dlist_node_push(s_list, node);
+		node = dlist_node_new(s_list, int_copy(2), int_dalloc);
+		dlist_node_push(s_list, node);
+		node = dlist_node_new(s_list, int_copy(1), int_dalloc);
+		dlist_node_push(s_list, node);
 		//test
-		assert( NULL != dlist_push_list(list, s_list) );
+		assert( NULL != dlist_list_push(list, s_list) );
 		//confirm that s_list is now empty
 		assert( NULL == s_list->head );
 		assert( 0 == s_list->count );
@@ -617,42 +617,42 @@ int main(int argc, char **argv)
 		//check new list count
 		assert( 6 == list->count );
 
-		dlist_delete_all_nodes(list);
-		dlist_delete_list(list);
-		dlist_delete_list(s_list);
+		dlist_nodes_delete_all(list);
+		dlist_list_delete(list);
+		dlist_list_delete(s_list);
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_append_list");
+		wmsg("dlist_list_append");
 		struct dlist_list *list;
 		struct dlist_list *s_list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
-		s_list = dlist_new_list(NULL, NULL);
+		list = dlist_list_new(NULL, NULL);
+		s_list = dlist_list_new(NULL, NULL);
 		//test failures
-		assert( NULL == dlist_append_list(NULL, NULL) );
-		assert( NULL == dlist_append_list(list, NULL) );
-		assert( NULL == dlist_append_list(NULL, s_list) );
+		assert( NULL == dlist_list_append(NULL, NULL) );
+		assert( NULL == dlist_list_append(list, NULL) );
+		assert( NULL == dlist_list_append(NULL, s_list) );
 		//test empty
-		assert( NULL == dlist_append_list(list, s_list) );
+		assert( NULL == dlist_list_append(list, s_list) );
 		//build the list to test 'proper behavior'
 		//list
-		node = dlist_new_node(list, int_copy(6), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(5), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(4), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_node_new(list, int_copy(6), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(5), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(4), int_dalloc);
+		dlist_node_push(list, node);
 		//s_list
-		node = dlist_new_node(s_list, int_copy(3), int_dalloc);
-		dlist_push_node(s_list, node);
-		node = dlist_new_node(s_list, int_copy(2), int_dalloc);
-		dlist_push_node(s_list, node);
-		node = dlist_new_node(s_list, int_copy(1), int_dalloc);
-		dlist_push_node(s_list, node);
+		node = dlist_node_new(s_list, int_copy(3), int_dalloc);
+		dlist_node_push(s_list, node);
+		node = dlist_node_new(s_list, int_copy(2), int_dalloc);
+		dlist_node_push(s_list, node);
+		node = dlist_node_new(s_list, int_copy(1), int_dalloc);
+		dlist_node_push(s_list, node);
 		//test
-		assert( NULL != dlist_append_list(list, s_list) );
+		assert( NULL != dlist_list_append(list, s_list) );
 		//confirm that s_list is now empty
 		assert( NULL == s_list->head );
 		assert( NULL == s_list->tail );
@@ -673,34 +673,34 @@ int main(int argc, char **argv)
 		//check new list size
 		assert( 6 == list->count );
 
-		dlist_delete_all_nodes(list);
-		dlist_delete_list(list);
-		dlist_delete_list(s_list);
+		dlist_nodes_delete_all(list);
+		dlist_list_delete(list);
+		dlist_list_delete(s_list);
 		wmsg("[OK]\n");
 	}
 
 	{
-		wmsg("dlist_split_list");
+		wmsg("dlist_list_split");
 		struct dlist_list *list;
 		struct dlist_list *n_list;
 		struct dlist_node *node;
 		void *key;
-		list = dlist_new_list(NULL, NULL);
+		list = dlist_list_new(NULL, NULL);
 		key = int_copy(6);
 		//test failures
-		assert( NULL == dlist_split_list(NULL, NULL, NULL) );
-		assert( NULL == dlist_split_list(list, NULL, NULL) );
-		assert( NULL == dlist_split_list(NULL, key, NULL) );
-		assert( NULL == dlist_split_list(NULL, NULL, cmp_int) );
-		assert( NULL == dlist_split_list(list, key, NULL) );
-		assert( NULL == dlist_split_list(NULL, key, cmp_int) );
+		assert( NULL == dlist_list_split(NULL, NULL, NULL) );
+		assert( NULL == dlist_list_split(list, NULL, NULL) );
+		assert( NULL == dlist_list_split(NULL, key, NULL) );
+		assert( NULL == dlist_list_split(NULL, NULL, cmp_int) );
+		assert( NULL == dlist_list_split(list, key, NULL) );
+		assert( NULL == dlist_list_split(NULL, key, cmp_int) );
 		//test empty
-		assert( NULL == dlist_split_list(list, key, cmp_int) );
+		assert( NULL == dlist_list_split(list, key, cmp_int) );
 		//create node for testing
-		node = dlist_new_node(list, int_copy(6), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_node_new(list, int_copy(6), int_dalloc);
+		dlist_node_push(list, node);
 		//test found @ head and split;
-		assert( (n_list = dlist_split_list(list, key, cmp_int)) );
+		assert( (n_list = dlist_list_split(list, key, cmp_int)) );
 		//check the list is indeed empty
 		assert( NULL == list->head );
 		assert( NULL == list->tail );
@@ -710,20 +710,20 @@ int main(int argc, char **argv)
 		assert( 1 == n_list->count );
 		assert( 6 == *(int*)n_list->head->data );
 
-		dlist_delete_all_nodes(n_list);
-		dlist_delete_list(n_list);
+		dlist_nodes_delete_all(n_list);
+		dlist_list_delete(n_list);
 		n_list = NULL;
 		node = NULL;
 
 		//build some nodes for further testing
-		node = dlist_new_node(list, int_copy(6), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(5), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(4), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_node_new(list, int_copy(6), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(5), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(4), int_dalloc);
+		dlist_node_push(list, node);
 		//test end/tail split
-		assert( (n_list = dlist_split_list(list, key, cmp_int)) );
+		assert( (n_list = dlist_list_split(list, key, cmp_int)) );
 		//check list was properly split
 		assert( NULL == list->head->next->next );
 		assert( 2 == list->count );
@@ -733,15 +733,15 @@ int main(int argc, char **argv)
 		assert( 1 == n_list->count );
 		assert( 6 == *(int*)n_list->head->data );
 		//save the node in 'list' for further testing
-		node = dlist_pop_node(n_list);
-		dlist_append_node(list, node);
+		node = dlist_node_pop(n_list);
+		dlist_node_append(list, node);
 
-		dlist_delete_list(n_list);
+		dlist_list_delete(n_list);
 		n_list = NULL;
 		//edit key to test common :middle: split
 		*(int*)key = 5;
 		//the test
-		assert( (n_list = dlist_split_list(list, key, cmp_int)) );
+		assert( (n_list = dlist_list_split(list, key, cmp_int)) );
 		//check list has everything properly set
 		assert( 1 == list->count );
 		assert( 4 == *(int*)list->head->data );
@@ -759,33 +759,33 @@ int main(int argc, char **argv)
 	}
 
 	{
-		wmsg("dlist_split_list_at");
+		wmsg("dlist_list_split_at");
 		struct dlist_list *list;
 		struct dlist_list *n_list;
 		struct dlist_node *node;
-		list = dlist_new_list(NULL, NULL);
-		node = dlist_new_node(list, int_copy(6), int_dalloc);
+		list = dlist_list_new(NULL, NULL);
+		node = dlist_node_new(list, int_copy(6), int_dalloc);
 		//test failures
 		//no list and lower bounds
-		assert( NULL == dlist_split_list_at(NULL, 0) );
+		assert( NULL == dlist_list_split_at(NULL, 0) );
 		//no list and higher bounds
-		assert( NULL == dlist_split_list_at(NULL, 100) );
+		assert( NULL == dlist_list_split_at(NULL, 100) );
 		//no list correct bounds
-		assert( NULL == dlist_split_list_at(NULL, 1) );
+		assert( NULL == dlist_list_split_at(NULL, 1) );
 		//empty list lower bounds
-		assert( NULL == dlist_split_list_at(list, 0) );
+		assert( NULL == dlist_list_split_at(list, 0) );
 		//empty list higher bounds
-		assert( NULL == dlist_split_list_at(list, 100) );
+		assert( NULL == dlist_list_split_at(list, 100) );
 		//empty list correct bounds
-		assert( NULL == dlist_split_list_at(list, 1) );
-		dlist_push_node(list, node);
+		assert( NULL == dlist_list_split_at(list, 1) );
+		dlist_node_push(list, node);
 		//non empty list lower bounds
-		assert( NULL == dlist_split_list_at(list, 0) );
+		assert( NULL == dlist_list_split_at(list, 0) );
 		//non empty list higher bounds
-		assert( NULL == dlist_split_list_at(list, 100) );
+		assert( NULL == dlist_list_split_at(list, 100) );
 		//test found @ index 1
 		node = NULL;
-		assert( (n_list = dlist_split_list_at(list, 1)) );
+		assert( (n_list = dlist_list_split_at(list, 1)) );
 		//check list is indeed empty
 		assert( NULL == list->head );
 		assert( NULL == list->tail );
@@ -800,16 +800,16 @@ int main(int argc, char **argv)
 		list->tail = n_list->tail;
 		list->count = n_list->count;
 
-		dlist_delete_list(n_list);
+		dlist_list_delete(n_list);
 		n_list = NULL;
 
 		//create some nodes for further testing
-		node = dlist_new_node(list, int_copy(5), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(4), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_node_new(list, int_copy(5), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(4), int_dalloc);
+		dlist_node_push(list, node);
 		//test index at end/tail
-		assert( (n_list = dlist_split_list_at(list, 3)) );
+		assert( (n_list = dlist_list_split_at(list, 3)) );
 		//check list has everything properly set
 		assert( NULL != list->head );
 		assert( NULL != list->tail );
@@ -825,10 +825,10 @@ int main(int argc, char **argv)
 		assert( 1 == n_list->count );
 		assert( 6 == *(int*)n_list->head->data );
 
-		dlist_delete_all_nodes(list);
-		dlist_delete_all_nodes(n_list);
-		dlist_delete_list(list);
-		dlist_delete_list(n_list);
+		dlist_nodes_delete_all(list);
+		dlist_nodes_delete_all(n_list);
+		dlist_list_delete(list);
+		dlist_list_delete(n_list);
 		wmsg("[OK]\n");
 	}
 

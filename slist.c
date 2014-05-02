@@ -35,7 +35,7 @@ struct slist_list *slist_init(struct slist_list *list,
 	return list;
 }/* slist_init */
 
-struct slist_list *slist_new_list(void *(*node_alloc)(size_t),
+struct slist_list *slist_list_new(void *(*node_alloc)(size_t),
 				  void (*node_dalloc)(void *))
 {
 	node_alloc = (node_alloc ? node_alloc : SLIST_DEF_ALLOC);
@@ -57,9 +57,9 @@ struct slist_list *slist_new_list(void *(*node_alloc)(size_t),
 	list->head = NULL;
 
 	return list;
-}/* slist_new_list */
+}/* slist_list_new */
 
-struct slist_node *slist_new_node(struct slist_list *list,
+struct slist_node *slist_node_new(struct slist_list *list,
 				  void *data, void (*dalloc)(void *))
 {
 
@@ -78,17 +78,17 @@ struct slist_node *slist_new_node(struct slist_list *list,
 	node->next = NULL;
 
 	return node;
-}/* slist_new_node */
+}/* slist_node_new */
 
-inline void slist_print_node(const struct slist_node *node,
+inline void slist_node_print(const struct slist_node *node,
 			     void(*print)(void *))
 {
 	if ( !node || !print )
 		return;
 	print(node->data);
-}/* slist_print_node */
+}/* slist_node_print */
 
-void slist_delete_node(struct slist_list *list,
+void slist_node_delete(struct slist_list *list,
 		       struct slist_node *node)
 {
 	if (!list || !node )
@@ -101,18 +101,18 @@ void slist_delete_node(struct slist_list *list,
 
 	list->node_dalloc(node);
 	node = NULL;
-}/* slist_delete_node */
+}/* slist_node_delete */
 
-void slist_delete_list(struct slist_list *list)
+void slist_list_delete(struct slist_list *list)
 {
 	if (!list)
 		return;
 
 	void (*node_dalloc)(void *) = list->node_dalloc;
 	node_dalloc(list);
-}/* slist_delete_list */
+}/* slist_list_delete */
 
-struct slist_node *slist_push_node(struct slist_list *list,
+struct slist_node *slist_node_push(struct slist_list *list,
 				   struct slist_node *node)
 {
 	if ( !list || !node )
@@ -123,9 +123,9 @@ struct slist_node *slist_push_node(struct slist_list *list,
 	++list->count;
 
 	return node;
-}/* slist_push_node */
+}/* slist_node_push */
 
-struct slist_node *slist_append_node(struct slist_list *list,
+struct slist_node *slist_node_append(struct slist_list *list,
 				     struct slist_node *node)
 {
 	if ( !list || !node )
@@ -148,9 +148,9 @@ struct slist_node *slist_append_node(struct slist_list *list,
 	node->next = NULL;
 	++list->count;
 	return pnode;
-}/* slist_append_node */
+}/* slist_node_append */
 
-struct slist_node *slist_pop_node(struct slist_list *list)
+struct slist_node *slist_node_pop(struct slist_list *list)
 {
 	if ( !list || !list->head )
 		return NULL;
@@ -160,9 +160,9 @@ struct slist_node *slist_pop_node(struct slist_list *list)
 	list->head = list->head->next;
 	--list->count;
 	return node;
-}/* slist_pop_node */
+}/* slist_node_pop */
 
-struct slist_node *slist_find_node(struct slist_list *list, void *key,
+struct slist_node *slist_node_find(struct slist_list *list, void *key,
 				   int (*cmp)(void *a, void *b))
 {
 	if ( !list || !list->head || !key || !cmp )
@@ -181,7 +181,7 @@ struct slist_node *slist_find_node(struct slist_list *list, void *key,
 
 	return iter->next;
 
-}/* slist_find_node */
+}/* slist_node_find */
 
 size_t slist_find_index_of(struct slist_list *list, void *key,
 			   int (*cmp)(void *a, void *b))
@@ -204,7 +204,7 @@ size_t slist_find_index_of(struct slist_list *list, void *key,
 	return idx;
 }/* slist_find_index_of */
 
-struct slist_node *slist_remove_node(struct slist_list *list, void *key,
+struct slist_node *slist_node_remove(struct slist_list *list, void *key,
 				     int (*cmp)(void *a, void *b))
 {
 	if ( !list || !list->head || !key || !cmp )
@@ -236,9 +236,9 @@ struct slist_node *slist_remove_node(struct slist_list *list, void *key,
 	--list->count;
 	return pnode;
 
-}/* slist_remove_node */
+}/* slist_node_remove */
 
-struct slist_node *slist_remove_node_at(struct slist_list *list,
+struct slist_node *slist_node_remove_at(struct slist_list *list,
 					const size_t index)
 {
 	if ( !list || !list->head || index == 0 || index > list->count )
@@ -250,7 +250,7 @@ struct slist_node *slist_remove_node_at(struct slist_list *list,
 	size_t idx = 1;
 
 	if ( 1 == index )
-		return slist_pop_node(list);
+		return slist_node_pop(list);
 
 	do{
 		prev = head;
@@ -262,9 +262,9 @@ struct slist_node *slist_remove_node_at(struct slist_list *list,
 
 	return head;
 
-}/* slist_remove_node_at */
+}/* slist_node_remove_at */
 
-void slist_foreach_node(struct slist_list *list,
+void slist_node_foreach(struct slist_list *list,
 			void *(*action)(void *carry, void *data, void *param),
 			void *param)
 {
@@ -279,23 +279,23 @@ void slist_foreach_node(struct slist_list *list,
 		carry = action(carry, iter->data, param);
 	}
 
-}/* slist_foreach_node */
+}/* slist_node_foreach */
 
-struct slist_list *slist_delete_all_nodes(struct slist_list *list)
+struct slist_list *slist_nodes_delete_all(struct slist_list *list)
 {
 	if ( !list || !list->head )
 		return NULL;
 
 	while( NULL != list->head )
 	{
-		slist_delete_node(list, slist_pop_node(list));
+		slist_node_delete(list, slist_node_pop(list));
 	}
 
 	return list;
 
-}/* slist_delete_all_nodes */
+}/* slist_nodes_delete_all */
 
-struct slist_list *slist_reverse_list(struct slist_list *list)
+struct slist_list *slist_list_reverse(struct slist_list *list)
 {
 	if ( !list || !list->head )
 		return NULL;
@@ -323,14 +323,14 @@ struct slist_list *slist_reverse_list(struct slist_list *list)
 	list->head = next;
 
 	return list;
-}/* slist_reverse_list */
+}/* slist_list_reverse */
 
 inline size_t slist_get_size(struct slist_list *list)
 {
 	return list->count;
 }/* slist_get_size */
 
-struct slist_list *slist_push_list(struct slist_list *list,
+struct slist_list *slist_list_push(struct slist_list *list,
 				   struct slist_list *s_list)
 {
 	if ( !list || !s_list || !s_list->head )
@@ -361,9 +361,9 @@ struct slist_list *slist_push_list(struct slist_list *list,
 
 	return list;
 
-}/* slist_push_list */
+}/* slist_list_push */
 
-struct slist_list *slist_append_list(struct slist_list *list,
+struct slist_list *slist_list_append(struct slist_list *list,
 				     struct slist_list *s_list)
 {
 	if ( !list || !s_list || !s_list->head )
@@ -392,9 +392,9 @@ struct slist_list *slist_append_list(struct slist_list *list,
 
 	return list;
 
-}/* slist_append_list */
+}/* slist_list_append */
 
-struct slist_list *slist_split_list(struct slist_list *list, void *key,
+struct slist_list *slist_list_split(struct slist_list *list, void *key,
 				    int (*cmp)(void *a, void *b))
 {
 	if ( !list || !list->head || !key || !cmp )
@@ -405,7 +405,7 @@ struct slist_list *slist_split_list(struct slist_list *list, void *key,
 
 	//check key @ head
 	if ( 0 == cmp(list->head->data, key) ) {
-		n_list = slist_new_list(list->node_alloc, list->node_dalloc);
+		n_list = slist_list_new(list->node_alloc, list->node_dalloc);
 		if ( NULL == n_list )
 			return NULL;
 
@@ -431,7 +431,7 @@ struct slist_list *slist_split_list(struct slist_list *list, void *key,
 	if ( NULL == iter->next )
 		return NULL;
 
-	n_list = slist_new_list(list->node_alloc, list->node_dalloc);
+	n_list = slist_list_new(list->node_alloc, list->node_dalloc);
 
 	if ( NULL == n_list )
 		return NULL;
@@ -444,9 +444,9 @@ struct slist_list *slist_split_list(struct slist_list *list, void *key,
 
 	return n_list;
 
-}/* slist_split_list */
+}/* slist_list_split */
 
-struct slist_list *slist_split_list_at(struct slist_list *list,
+struct slist_list *slist_list_split_at(struct slist_list *list,
 				       const size_t index)
 {
 
@@ -460,7 +460,7 @@ struct slist_list *slist_split_list_at(struct slist_list *list,
 	size_t idx = 1;
 
 	//create our slist
-	n_list = slist_new_list(list->node_alloc, list->node_dalloc);
+	n_list = slist_list_new(list->node_alloc, list->node_dalloc);
 
 	if ( !n_list )
 		return NULL;
@@ -497,4 +497,4 @@ struct slist_list *slist_split_list_at(struct slist_list *list,
 
 	return n_list;
 
-}/* slist_split_list_at */
+}/* slist_list_split_at */

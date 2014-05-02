@@ -97,7 +97,7 @@ struct dlist_list *dlist_init(struct dlist_list *list,
  * passing invalid ['list' or 'node_alloc' or 'node_dalloc']
  * ------- results in undefined behavior
  */
-struct dlist_list *dlist_new_list(void *(*node_alloc)(size_t),
+struct dlist_list *dlist_list_new(void *(*node_alloc)(size_t),
 				  void (*node_dalloc)(void *));
 
 
@@ -111,7 +111,7 @@ struct dlist_list *dlist_new_list(void *(*node_alloc)(size_t),
  * passing invalid ['list' or 'data' or 'dalloc']
  * ------- results in undefined behavior
  */
-struct dlist_node *dlist_new_node(struct dlist_list *list,
+struct dlist_node *dlist_node_new(struct dlist_list *list,
 				  void *data, void (*dalloc)(void *));
 
 
@@ -124,7 +124,7 @@ struct dlist_node *dlist_new_node(struct dlist_list *list,
  *
  * FIXME NOTE: consider using macro instead. unsing inline for now
  */
-void dlist_print_node(const struct dlist_node *node,
+void dlist_node_print(const struct dlist_node *node,
 		      void (*print)(void *));
 
 
@@ -136,7 +136,7 @@ void dlist_print_node(const struct dlist_node *node,
  * passing invalid ['list' or 'node']
  * ------- results in undefined behavior
  */
-void dlist_delete_node(struct dlist_list *list,
+void dlist_node_delete(struct dlist_list *list,
 		       struct dlist_node *node);
 
 
@@ -144,12 +144,12 @@ void dlist_delete_node(struct dlist_list *list,
  * passing NULL in 'list' returns with no operation executed
  *
  * NOTE: deleting the 'list' won't free the 'nodes' contained in it.
- * ------- see dlist_delete_all_nodes for that.
+ * ------- see dlist_nodes_delete_all for that.
  *
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
-void dlist_delete_list(struct dlist_list *list);
+void dlist_list_delete(struct dlist_list *list);
 
 
 /* returns the 'list' head, new head.
@@ -161,7 +161,7 @@ void dlist_delete_list(struct dlist_list *list);
  * passing invalid ['list' or 'node']
  * ------- results in undefined behavior
  */
-struct dlist_node *dlist_push_node(struct dlist_list *list,
+struct dlist_node *dlist_node_push(struct dlist_list *list,
 				   struct dlist_node *node);
 
 
@@ -172,7 +172,7 @@ struct dlist_node *dlist_push_node(struct dlist_list *list,
  * passing invalid ['list' or 'node']
  * ------- results in undefined behavior
  */
-struct dlist_node *dlist_append_node(struct dlist_list *list,
+struct dlist_node *dlist_node_append(struct dlist_list *list,
 				     struct dlist_node *node);
 
 
@@ -184,7 +184,7 @@ struct dlist_node *dlist_append_node(struct dlist_list *list,
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
-struct dlist_node *dlist_pop_node(struct dlist_list *list);
+struct dlist_node *dlist_node_pop(struct dlist_list *list);
 
 
 /* returns the 'node' matching 'key'
@@ -199,7 +199,7 @@ struct dlist_node *dlist_pop_node(struct dlist_list *list);
  * passing invalid ['list' or 'key' or 'cmp']
  * ------- results in undefined behavior
  */
-struct dlist_node *dlist_find_node(struct dlist_list *list, void *key,
+struct dlist_node *dlist_node_find(struct dlist_list *list, void *key,
 				   int (*cmp)(void *a, void *b));
 
 
@@ -235,7 +235,7 @@ size_t dlist_find_index_of(struct dlist_list *list, void *key,
  * passing invalid ['list' or 'key' or 'cmp']
  * ------- results in undefined behavior
  */
-struct dlist_node *dlist_remove_node(struct dlist_list *list, void *key,
+struct dlist_node *dlist_node_remove(struct dlist_list *list, void *key,
 				     int (*cmp)(void *a, void *b));
 
 
@@ -249,7 +249,7 @@ struct dlist_node *dlist_remove_node(struct dlist_list *list, void *key,
  * passing invalid ['list' or 'index']
  * ------- results in undefined behavior
  */
-struct dlist_node *dlist_remove_node_at(struct dlist_list *list,
+struct dlist_node *dlist_node_remove_at(struct dlist_list *list,
 					const size_t index);
 
 
@@ -262,7 +262,7 @@ struct dlist_node *dlist_remove_node_at(struct dlist_list *list,
  * ABOUT ['action']: function takes 3 parameters
  * ------- carry: an argument that is used to 'catch' the result
  * -------------- of 'action' and carry it into next execution
- * -------------- _foreach call of dlist_foreach_node carry is NULL
+ * -------------- _foreach call of dlist_node_foreach carry is NULL
  * -------------- in the first execution of 'action'
  * ------- data: the data contained in the node
  * ------- param: optional. param is passed to all action calls
@@ -273,7 +273,7 @@ struct dlist_node *dlist_remove_node_at(struct dlist_list *list,
  * FIXME: consider removing carry and return value, since a packed param
  * ------- should suffice.
  */
-void dlist_foreach_node(struct dlist_list *list,
+void dlist_node_foreach(struct dlist_list *list,
 			void *(action)(void *carry, void *data, void *param),
 			void *param);
 
@@ -283,12 +283,12 @@ void dlist_foreach_node(struct dlist_list *list,
  * returns NULL if 'list' is empty
  *
  * ABOUT ['list'] _status_ : still needs to be freed if it was allocated with
- * ------- dlist_new_list. see dlist_delete_list documentation for more info.
+ * ------- dlist_list_new. see dlist_list_delete documentation for more info.
  *
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
-struct dlist_list *dlist_delete_all_nodes(struct dlist_list *list);
+struct dlist_list *dlist_nodes_delete_all(struct dlist_list *list);
 
 
 /* returns 'list' reversed
@@ -306,7 +306,7 @@ struct dlist_list *dlist_delete_all_nodes(struct dlist_list *list);
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
-struct dlist_list *dlist_reverse_list(struct dlist_list *list);
+struct dlist_list *dlist_list_reverse(struct dlist_list *list);
 
 
 /* returns the number of 'nodes' contained in 'list'
@@ -326,11 +326,11 @@ size_t dlist_get_size(struct dlist_list *list);
  * returns NULL if 's_list' is empty.
  *
  * ABOUT [merging]: 's_list' becomes empty after merge, but may need to
- * ------- be manually freed. see dlist_delete_list for that.
+ * ------- be manually freed. see dlist_list_delete for that.
  * ------- if 'list' -> 'node_dalloc' can't free
  * ------- 's_list' -> 'node_alloc' allocated memory, the lists shouldn't
  * ------- be merged before conversion, since this may lead to memory leaks.
- * ------- tip: use dlist_foreach_node and just build an 'action' function
+ * ------- tip: use dlist_node_foreach and just build an 'action' function
  * ------- that makes the conversion if required.
  *
  * example: ******************************************************************
@@ -346,7 +346,7 @@ size_t dlist_get_size(struct dlist_list *list);
  * passing invalid ['list' or 's_list']
  * -------- results in undefined behavior
  */
-struct dlist_list *dlist_push_list(struct dlist_list *list,
+struct dlist_list *dlist_list_push(struct dlist_list *list,
 				   struct dlist_list *s_list);
 
 
@@ -356,7 +356,7 @@ struct dlist_list *dlist_push_list(struct dlist_list *list,
  * returns NULL if 's_list' is empty.
  *
  * ABOUT [merging]: 's_list' becomes empty after merge but still needs to be
- * ------- be manually freed. see dlist_delete_list for that.
+ * ------- be manually freed. see dlist_list_delete for that.
  * ------- if 'list' -> 'node_dalloc' can't free
  * ------- 's_list' -> 'node_alloc' allocated memory, the lists shouldn't
  * ------- be merged before conversion, since this may lead to memory leaks.
@@ -376,7 +376,7 @@ struct dlist_list *dlist_push_list(struct dlist_list *list,
  * passing invalid ['list' or 's_list']
  * ------- results in undefined behavior
  */
-struct dlist_list *dlist_append_list(struct dlist_list *list,
+struct dlist_list *dlist_list_append(struct dlist_list *list,
 				     struct dlist_list *s_list);
 
 
@@ -390,7 +390,7 @@ struct dlist_list *dlist_append_list(struct dlist_list *list,
  * returns NULL if allocation of 'new list' fails
  *
  * ---info makes 'list' empty if 'key' matches @ head
- * ---info  the newly allocated list has to be freed. see dlist_delete_list
+ * ---info  the newly allocated list has to be freed. see dlist_list_delete
  *
  * ABOUT ['cmp']: function needs to return 0 when 'a' and 'b' match
  * example: ******************************************************************
@@ -405,7 +405,7 @@ struct dlist_list *dlist_append_list(struct dlist_list *list,
  * passing invalid ['list']
  * -------- results in undefined behavior
  */
-struct dlist_list *dlist_split_list(struct dlist_list *list, void *key,
+struct dlist_list *dlist_list_split(struct dlist_list *list, void *key,
 				    int (*cmp)(void *a, void *b));
 
 
@@ -417,7 +417,7 @@ struct dlist_list *dlist_split_list(struct dlist_list *list, void *key,
  * returns NULL if allocation of 'new list' fails
  *
  * ---info makes 'list' empty if 'index' is 1/head
- * ---info the newly allocated list has to be freed. see dlist_delete_list
+ * ---info the newly allocated list has to be freed. see dlist_list_delete
  *
  * ABOUT ['cmp']: function needs to return 0 when 'a' and 'b' match
  *
@@ -433,7 +433,7 @@ struct dlist_list *dlist_split_list(struct dlist_list *list, void *key,
  * passing invalid ['list']
  * -------- results in undefined behavior
  */
-struct dlist_list *dlist_split_list_at(struct dlist_list *list,
+struct dlist_list *dlist_list_split_at(struct dlist_list *list,
 				       const size_t index);
 
 #endif

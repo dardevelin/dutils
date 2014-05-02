@@ -89,7 +89,7 @@ struct slist_list *slist_init(struct slist_list *list,
  * passing invalid ['list' or 'node_alloc' or 'node_dalloc' ]
  * ------- results in undefined behavior
  */
-struct slist_list *slist_new_list(void *(*node_alloc)(size_t),
+struct slist_list *slist_list_new(void *(*node_alloc)(size_t),
 				  void (*node_dalloc)(void *));
 
 
@@ -102,7 +102,7 @@ struct slist_list *slist_new_list(void *(*node_alloc)(size_t),
  * passing invalid ['list' or 'data' or 'dalloc' ]
  * ------- results in undefined behavior
  */
-struct slist_node *slist_new_node(struct slist_list *list,
+struct slist_node *slist_node_new(struct slist_list *list,
 				  void *data, void (*dalloc)(void *));
 
 
@@ -115,7 +115,7 @@ struct slist_node *slist_new_node(struct slist_list *list,
  *
  * FIXME_NOTE: consider using a macro instead. using inline for now
  */
-void slist_print_node(const struct slist_node *node,
+void slist_node_print(const struct slist_node *node,
 			     void (*print)(void *));
 
 
@@ -127,7 +127,7 @@ void slist_print_node(const struct slist_node *node,
  * passing invalid ['list' or 'node' ]
  * ------- results in undefined behavior
  */
-void slist_delete_node(struct slist_list *list,
+void slist_node_delete(struct slist_list *list,
 		       struct slist_node *node);
 
 
@@ -135,12 +135,12 @@ void slist_delete_node(struct slist_list *list,
  * passing NULL in 'list' returns with no operation executed
  *
  * NOTE: deleting the 'list0 won't free the nodes contained in it.
- * ------- see slist_delete_all_nodes for that.
+ * ------- see slist_nodes_delete_all for that.
  *
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
-void slist_delete_list(struct slist_list *list);
+void slist_list_delete(struct slist_list *list);
 
 
 /* returns the 'list' head new head
@@ -150,7 +150,7 @@ void slist_delete_list(struct slist_list *list);
  * passing invalid ['list' or 'node']
  * ------- results in undefined behavior
  */
-struct slist_node *slist_push_node(struct slist_list *list,
+struct slist_node *slist_node_push(struct slist_list *list,
 				   struct slist_node *node);
 
 
@@ -161,7 +161,7 @@ struct slist_node *slist_push_node(struct slist_list *list,
  * passing invalid ['list' or 'node']
  * ------- results in undefined behavior
  */
-struct slist_node *slist_append_node(struct slist_list *list,
+struct slist_node *slist_node_append(struct slist_list *list,
 				     struct slist_node *node);
 
 
@@ -172,7 +172,7 @@ struct slist_node *slist_append_node(struct slist_list *list,
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
-struct slist_node *slist_pop_node(struct slist_list *list);
+struct slist_node *slist_node_pop(struct slist_list *list);
 
 
 /* returns the 'node matching 'key'
@@ -187,7 +187,7 @@ struct slist_node *slist_pop_node(struct slist_list *list);
  * passing invalid ['list' or 'key' or 'cmp']
  * ------- results in undefined behavior
  */
-struct slist_node *slist_find_node(struct slist_list *list, void *key,
+struct slist_node *slist_node_find(struct slist_list *list, void *key,
 				   int (*cmp)(void *a, void *b));
 
 
@@ -221,7 +221,7 @@ size_t slist_find_index_of(struct slist_list *list, void *key,
  * passing invalid ['list' or 'key' or 'cmp']
  * ------- results in undefined behavior
  */
-struct slist_node *slist_remove_node(struct slist_list *list, void *key,
+struct slist_node *slist_node_remove(struct slist_list *list, void *key,
 				     int (*cmp)(void *a, void *b));
 
 
@@ -235,7 +235,7 @@ struct slist_node *slist_remove_node(struct slist_list *list, void *key,
  * passing invalid ['list' or 'index']
  * ------- results in undefined behavior
  */
-struct slist_node *slist_remove_node_at(struct slist_list *list,
+struct slist_node *slist_node_remove_at(struct slist_list *list,
 					const size_t index);
 
 
@@ -248,7 +248,7 @@ struct slist_node *slist_remove_node_at(struct slist_list *list,
  * ABOUT 'action': function takes 3 parameters
  * -------- carry: an argument that is used to 'catch' the result
  * --------------- of 'action' and carry it into next execution
- * --------------- _foreach call of slist_foreach_node carry is NULL
+ * --------------- _foreach call of slist_node_foreach carry is NULL
  * --------------- in first execution of 'action'
  * -------- data:  the data contained in the node
  * -------- param: optional. param is passed to all action calls
@@ -259,7 +259,7 @@ struct slist_node *slist_remove_node_at(struct slist_list *list,
  * //FIXME: consider removing carry and return value, since a packed param
  * -------- should suffice.
  */
-void slist_foreach_node(struct slist_list *list,
+void slist_node_foreach(struct slist_list *list,
 			void *(*action)(void *carry, void *data, void *param),
 			void *param);
 
@@ -267,12 +267,12 @@ void slist_foreach_node(struct slist_list *list,
 /* returns 'list' empty deleting all 'nodes' contained in 'list'
  * returns NULL if 'list' is NULL
  * returns NULL if 'list' is empty
- * ABOUT 'list' _status_ : still needs to be freed. see slist_delete_list
+ * ABOUT 'list' _status_ : still needs to be freed. see slist_list_delete
  *
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
-struct slist_list *slist_delete_all_nodes(struct slist_list *list);
+struct slist_list *slist_nodes_delete_all(struct slist_list *list);
 
 
 /* returns 'list' reversed
@@ -291,7 +291,7 @@ struct slist_list *slist_delete_all_nodes(struct slist_list *list);
  */
 
 
-struct slist_list *slist_reverse_list(struct slist_list *list);
+struct slist_list *slist_list_reverse(struct slist_list *list);
 
 /* returns the number of 'nodes' contained in 'list'
  * ABOUT slist_get_size : this function is a stub/dummy function
@@ -310,11 +310,11 @@ size_t slist_get_size(struct slist_list *list);
  * returns NULL if 's_list' is empty
  *
  * ABOUT merging: 's_list' becomes empty after merge but still needs to
- * ------- be manually freed. see slist_delete_list for that
+ * ------- be manually freed. see slist_list_delete for that
  * ------- if 'list' node_dalloc can't free
  * ------- 's_list' allocated memory by it's node_alloc, the lists shouldn't
  * ------- be merged before conversion since this may lead to memory leaks.
- * ------- tip: use slist_foreach_node and just build a 'action' that makes
+ * ------- tip: use slist_node_foreach and just build a 'action' that makes
  * ------- conversion if required.
  * example: *****************************************************************
  * ------- before merge
@@ -329,7 +329,7 @@ size_t slist_get_size(struct slist_list *list);
  * passing invalid ['list' or 's_list']
  * ------- results in undefined behavior
  */
-struct slist_list *slist_push_list(struct slist_list *list,
+struct slist_list *slist_list_push(struct slist_list *list,
 				   struct slist_list *s_list);
 
 
@@ -339,11 +339,11 @@ struct slist_list *slist_push_list(struct slist_list *list,
  * returns NULL if 's_list' is empty
  *
  * ABOUT merging: 's_list' becomes empty after merge but still needs to be
- * ------- be manually freed. see slist_delete_list for that
+ * ------- be manually freed. see slist_list_delete for that
  * ------- if 'list' node_dalloc can't free
  * ------- 's_list' allocated memory by it's node_alloc, the lists shouldn't
  * ------- be merged before conversion since this may lead to memory leaks.
- * ------- tip: use slist_foreach_node and just build a 'action' that makes
+ * ------- tip: use slist_node_foreach and just build a 'action' that makes
  * ------- conversion if required.
  * example: *****************************************************************
  * ------- before merge
@@ -358,7 +358,7 @@ struct slist_list *slist_push_list(struct slist_list *list,
  * passing invalid ['list' or 's_list']
  * ------- results in undefined behavior
  */
-struct slist_list *slist_append_list(struct slist_list *list,
+struct slist_list *slist_list_append(struct slist_list *list,
 				     struct slist_list *s_list);
 
 
@@ -371,7 +371,7 @@ struct slist_list *slist_append_list(struct slist_list *list,
  * returns NULL if allocation of 'new list' fails
  *
  * ---info makes 'list' empty if 'key' matches @ head
- * ---info the newly allocated list has to be freed. see slist_delete_list
+ * ---info the newly allocated list has to be freed. see slist_list_delete
  *
  * ABOUT cmp: function needs to return 0 when 'a' and 'b' match
  * example: *****************************************************************
@@ -386,7 +386,7 @@ struct slist_list *slist_append_list(struct slist_list *list,
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
-struct slist_list *slist_split_list(struct slist_list *list, void *key,
+struct slist_list *slist_list_split(struct slist_list *list, void *key,
 				    int (*cmp)(void *a, void *b));
 
 
@@ -397,7 +397,7 @@ struct slist_list *slist_split_list(struct slist_list *list, void *key,
  * returns NULL if allocation of 'new list' fails
  *
  * ---info makes 'list' empty if 'index' is 1/head
- * ---info the newly allocated list has to be freed. see slist_delete_list
+ * ---info the newly allocated list has to be freed. see slist_list_delete
  *
  * ABOUT cmp: function needs to return 0 when 'a' and 'b' match
  * example: *****************************************************************
@@ -412,7 +412,7 @@ struct slist_list *slist_split_list(struct slist_list *list, void *key,
  * passing invalid ['list']
  * ------- results in undefined behavior
  */
-struct slist_list *slist_split_list_at(struct slist_list *list,
+struct slist_list *slist_list_split_at(struct slist_list *list,
 				       const size_t index);
 
 
