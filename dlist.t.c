@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 		dlist_push_node(list, node);
 		//test pop
 		node = NULL;
-		assert( (node == dlist_pop_node(list)) );
+		assert( (node = dlist_pop_node(list)) );
 		assert( 0 == list->count );
 		assert( !list->head );
 		assert( !list->tail );
@@ -441,10 +441,10 @@ int main(int argc, char **argv)
 		node = NULL;
 		assert( (node = dlist_remove_node_at(list, 4)) );
 		assert( 3 == list->count );
-		assert( NULL == list->head->next->next->next->next );
+		assert( NULL == list->head->next->next->next );
 		assert( NULL == list->tail->next );
 		assert( 9 == *(int*)list->tail->data );
-		assert( list->tail == list->head->next->next->next );
+		assert( list->tail == list->head->next->next );
 		assert( 10 == *(int*)node->data );
 		//append our node back for now
 		dlist_append_node(list, node);
@@ -595,12 +595,12 @@ int main(int argc, char **argv)
 		node = dlist_new_node(list, int_copy(4), int_dalloc);
 		dlist_push_node(list, node);
 		//s_list
-		node = dlist_new_node(list, int_copy(3), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(2), int_dalloc);
-		dlist_push_node(list, node);
-		node = dlist_new_node(list, int_copy(1), int_dalloc);
-		dlist_push_node(list, node);
+		node = dlist_new_node(s_list, int_copy(3), int_dalloc);
+		dlist_push_node(s_list, node);
+		node = dlist_new_node(s_list, int_copy(2), int_dalloc);
+		dlist_push_node(s_list, node);
+		node = dlist_new_node(s_list, int_copy(1), int_dalloc);
+		dlist_push_node(s_list, node);
 		//test
 		assert( NULL != dlist_push_list(list, s_list) );
 		//confirm that s_list is now empty
@@ -612,8 +612,8 @@ int main(int argc, char **argv)
 		//check for new list tail (should be 6)
 		assert( 6 == *(int*) list->tail->data );
 		//check if merge points are properly linked
-		assert( 4 == *(int*) list->head->next->next->next->next->data );
-		assert( 3 == *(int*) list->tail->prev->prev->prev->prev->data );
+		assert( 4 == *(int*) list->head->next->next->next->data );
+		assert( 3 == *(int*) list->tail->prev->prev->prev->data );
 		//check new list count
 		assert( 6 == list->count );
 
@@ -655,15 +655,21 @@ int main(int argc, char **argv)
 		assert( NULL != dlist_append_list(list, s_list) );
 		//confirm that s_list is now empty
 		assert( NULL == s_list->head );
+		assert( NULL == s_list->tail );
 		assert( 0 == s_list->count );
 		//confirm that the merge was properly done
 		//check for list head (should be the same)
 		assert( 4 == *(int*)list->head->data );
+		assert( 5 == *(int*)list->head->next->data );
+		assert( 6 == *(int*)list->head->next->next->data );
+		assert( 1 == *(int*)list->head->next->next->next->data );
+		assert( 2 == *(int*)list->head->next->next->next->next->data );
+		assert( 3 == *(int*)list->head->next->next->next->next->next->data );
 		//check for tail (should be the old tail of s_list)
 		assert( 3 == *(int*)list->tail->data );
 		//check if merge points are properly linked
-		assert( 1 == *(int*) list->head->next->next->next->next->data );
-		assert( 6 == *(int*) list->tail->prev->prev->prev->prev->data );
+		assert( 1 == *(int*) list->head->next->next->next->data );
+		assert( 6 == *(int*) list->tail->prev->prev->prev->data );
 		//check new list size
 		assert( 6 == list->count );
 
@@ -817,7 +823,7 @@ int main(int argc, char **argv)
 		assert( NULL == n_list->head->prev );
 		assert( NULL == n_list->tail->next );
 		assert( 1 == n_list->count );
-		assert( 4 == *(int*)n_list->head->data );
+		assert( 6 == *(int*)n_list->head->data );
 
 		dlist_delete_all_nodes(list);
 		dlist_delete_all_nodes(n_list);
