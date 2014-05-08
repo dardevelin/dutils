@@ -277,6 +277,70 @@ int main(int argc, char **argv)
 	}
 
 	{
+		wmsg("dlist_node_fast_find");
+
+		struct dlist_list *list;
+		struct dlist_node *node;
+		void *key;
+		list = dlist_list_new(NULL, NULL);
+		node = dlist_node_new(list, int_copy(9), int_dalloc);
+		key = int_copy(9);
+
+		//test failures
+		assert( NULL == dlist_node_find(NULL, NULL, NULL) );
+		assert( NULL == dlist_node_find(list, NULL, NULL) );
+		assert( NULL == dlist_node_find(NULL, key, NULL) );
+		assert( NULL == dlist_node_find(NULL, NULL, cmp_int) );
+		assert( NULL == dlist_node_find(list, key, NULL) );
+		assert( NULL == dlist_node_find(list, NULL, cmp_int) );
+		assert( NULL == dlist_node_find(NULL, key, cmp_int) );
+		assert( NULL == dlist_node_find(list, key, cmp_int) );
+		//add node to list so we can test it
+		dlist_node_push(list, node);
+		//test found @ head
+		node = NULL;
+		assert( (node = dlist_node_find(list, key, cmp_int)) );
+		assert( 9 == *(int*)node->data );
+
+		//add some nodes to test other scenarios
+		node = dlist_node_new(list, int_copy(8), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(7), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(6), int_dalloc);
+		dlist_node_push(list, node);
+		//after pushes 9 is tail, test found in tail
+		node = NULL;
+		assert( (node = dlist_node_find(list, key, cmp_int)) );
+		assert( 9 == *(int*)node->data );
+		//edit key to test common :middle: found
+		*(int*)key = 8;
+		assert( (node = dlist_node_find(list, key, cmp_int)) );
+		assert( 8 == *(int*)node->data );
+		//edit key to test not found
+		*(int*)key = 100;
+		//test not found
+		assert( NULL == dlist_node_find(list, key, cmp_int) );
+		//yes a loop is nice, but lets do this
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
+
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
+
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
+
+		node = dlist_node_pop(list);
+		dlist_node_delete(list, node);
+
+		dlist_list_delete(list);
+		int_dalloc(key);
+
+		wmsg("[OK]\n");
+	}
+
+	{
 		wmsg("dlist_find_index_of");
 
 		struct dlist_list *list;

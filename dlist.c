@@ -215,6 +215,36 @@ struct dlist_node *dlist_node_find(struct dlist_list *list, void *key,
 }/* dlist_node_find */
 
 
+struct dlist_node *dlist_node_fast_find(struct dlist_list *list, void *key,
+					int (*cmp)(void *a, void *b))
+{
+	if ( !list || !list->head || !key || !cmp )
+		return NULL;
+
+	struct dlist_node *h_iter = list->head;
+	struct dlist_node *t_iter = list->tail;
+	//check if found @ head
+	if ( 0 == cmp(list->head->data, key) )
+		return list->head;
+
+	if ( list->head != list->tail && 0 == cmp(list->tail->data, key) )
+		return list->tail;
+
+	for( ; !h_iter && !t_iter; h_iter = h_iter->next, t_iter = t_iter->prev)
+	{
+		if ( 0 == cmp(h_iter->next->data, key) )
+			return h_iter->next;
+
+		if ( 0 == cmp(t_iter->next->data, key) )
+			return t_iter->next;
+
+		if ( h_iter == t_iter )
+			break;
+	}
+
+	return NULL;
+}
+
 size_t dlist_find_index_of(struct dlist_list *list, void *key,
 			   int (*cmp)(void *a, void *b))
 {

@@ -203,6 +203,27 @@ struct dlist_node *dlist_node_find(struct dlist_list *list, void *key,
 				   int (*cmp)(void *a, void *b));
 
 
+/* NOTE: this function can be faster then regular dlist_node_find
+ * because it performes a bidirectional search, therefor if the
+ * list contains duplication it will return which ever is closer
+ * to the edges.
+ *
+ * returns the 'node' matching 'key'
+ * returns NULL if 'key' is not found
+ * passing NULL in 'list' returns NULL.
+ * passing an empty 'list' returns NULL.
+ * passing NULL 'key' returns NULL.
+ * passing NULL 'cmp' returns NULL.
+ *
+ * ABOUT ['cmp']: function needs to return 0 when 'a' and 'b' match
+ *
+ * passing invalid ['list' or 'key' or 'cmp']
+ * ------- results in undefined behavior
+ */
+struct dlist_node *dlist_node_fast_find(struct dlist_list *list, void *key,
+					int (*cmp)(void *a, void *b));
+
+
 /* returns the 'index' of 'key' in 'list'
  * returns 0 if 'list' is NULL.
  * returns 0 if 'list' is empty.
