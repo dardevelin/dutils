@@ -59,7 +59,7 @@ struct dlist_list *dlist_list_new(void *(*node_alloc)(size_t),
 	list->count = 0;
 	list->head = NULL;
 	list->tail = NULL;
-	list->count++;
+	
 
 	return list;
 }/* dlist_list_new */
