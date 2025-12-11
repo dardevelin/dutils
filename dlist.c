@@ -587,3 +587,68 @@ struct dlist_list *dlist_list_split_at(struct dlist_list *list,
 
 	return n_list;
 }/* dlist_list_split_at */
+
+
+struct dlist_list *dlist_map(const struct dlist_list *list, dlist_map_func func, void (*dalloc)(void *))
+{
+	if (!list || !list->head || !func) return NULL;
+
+	struct dlist_list *new_list = dlist_list_new(list->node_alloc, list->node_dalloc);
+	if (!new_list) return NULL;
+
+	struct dlist_node *iter = list->head;
+	while (iter) {
+		void *new_data = func(iter->data);
+		struct dlist_node *new_node = dlist_node_new(new_list, new_data, dalloc);
+		if (!new_node) {
+			dlist_list_delete_all_nodes(new_list);
+			dlist_list_delete(new_list);
+			return NULL;
+		}
+		dlist_node_append(new_list, new_node);
+		iter = iter->next;
+	}
+
+	return new_list;
+}/* dlist_map */
+
+
+struct dlist_list *dlist_filter(const struct dlist_list *list, dlist_filter_func func)
+{
+	if (!list || !list->head || !func) return NULL;
+
+	struct dlist_list *new_list = dlist_list_new(list->node_alloc, list->node_dalloc);
+	if (!new_list) return NULL;
+
+	struct dlist_node *iter = list->head;
+	while (iter) {
+		if (func(iter->data)) {
+			struct dlist_node *new_node = dlist_node_new(new_list, iter->data, NULL);  // Shallow copy, no dalloc
+			if (!new_node) {
+				dlist_list_delete_all_nodes(new_list);
+				dlist_list_delete(new_list);
+				return NULL;
+			}
+			dlist_node_append(new_list, new_node);
+		}
+		iter = iter->next;
+	}
+
+	return new_list;
+}/* dlist_filter */
+
+
+void *dlist_fold(const struct dlist_list *list, void *initial, dlist_fold_func func)
+{
+	if (!list) return NULL;
+	if (!func) return initial;
+
+	void *acc = initial;
+	struct dlist_node *iter = list->head;
+	while (iter) {
+		acc = func(acc, iter->data);
+		iter = iter->next;
+	}
+
+	return acc;
+}/* dlist_fold */

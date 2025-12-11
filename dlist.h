@@ -27,6 +27,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 
 #define DLIST_DEF_ALLOC malloc
@@ -62,6 +63,14 @@ struct dlist_list
 
 typedef struct dlist_node dlist_node_t;
 typedef struct dlist_list dlist_list_t;
+
+/****************************************************************************
+ * functional operations typedefs
+ ****************************************************************************/
+
+typedef void *(*dlist_map_func)(void *data);
+typedef bool (*dlist_filter_func)(void *data);
+typedef void *(*dlist_fold_func)(void *acc, void *data);
 
 
 /****************************************************************************
@@ -456,5 +465,31 @@ struct dlist_list *dlist_list_split(struct dlist_list *list, void *key,
  */
 struct dlist_list *dlist_list_split_at(struct dlist_list *list,
 				       const size_t index);
+
+/* returns a new list with each element transformed by 'func'
+ * returns NULL if 'list' is NULL or allocation fails
+ * 'dalloc' is used for the new data; if NULL, no deallocator is set
+ *
+ * passing invalid ['list' or 'func']
+ * ------- results in undefined behavior
+ */
+struct dlist_list *dlist_map(const struct dlist_list *list, dlist_map_func func, void (*dalloc)(void *));
+
+/* returns a new list with elements that pass 'func' predicate
+ * returns NULL if 'list' is NULL or allocation fails
+ *
+ * passing invalid ['list' or 'func']
+ * ------- results in undefined behavior
+ */
+struct dlist_list *dlist_filter(const struct dlist_list *list, dlist_filter_func func);
+
+/* folds the list from left to right using 'func', starting with 'initial'
+ * returns the final accumulator value
+ * returns 'initial' if 'list' is NULL or empty
+ *
+ * passing invalid ['list' or 'func']
+ * ------- results in undefined behavior
+ */
+void *dlist_fold(const struct dlist_list *list, void *initial, dlist_fold_func func);
 
 #endif

@@ -25,6 +25,25 @@
 #define LOUD
 #include "common.h"
 
+// Helper functions for tests
+void *double_int(void *data) {
+    int *val = (int *)data;
+    int *new_val = int_copy(*val * 2);
+    return new_val;
+}
+
+bool is_even(void *data) {
+    int *val = (int *)data;
+    return (*val % 2) == 0;
+}
+
+void *add_int(void *acc, void *data) {
+    int *a = (int *)acc;
+    int *d = (int *)data;
+    *a += *d;
+    return acc;
+}
+
 int main(int argc, char **argv)
 {
 	wmsg("testing dlist lib interface\n");
@@ -893,6 +912,127 @@ int main(int argc, char **argv)
 		dlist_list_delete_all_nodes(n_list);
 		dlist_list_delete(list);
 		dlist_list_delete(n_list);
+		wmsg("[OK]\n");
+	}
+
+	{
+		wmsg("dlist_map");
+
+		struct dlist_list *list;
+		struct dlist_list *mapped;
+		struct dlist_node *node;
+
+		list = dlist_list_new(NULL, NULL);
+
+		// Test failures
+		assert(NULL == dlist_map(NULL, NULL, NULL));
+		assert(NULL == dlist_map(list, NULL, NULL));
+
+		// Test empty list
+		assert(NULL == dlist_map(list, double_int, int_dalloc));
+
+		// Create list with 1,2,3
+		node = dlist_node_new(list, int_copy(1), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(2), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(3), int_dalloc);
+		dlist_node_push(list, node);
+
+		// Map
+		assert((mapped = dlist_map(list, double_int, int_dalloc)));
+		assert(3 == mapped->count);
+
+		// Check values: should be 2,4,6 (since push reverses order? Wait, push adds to head, so original order is 3,2,1, mapped 6,4,2
+		// Wait, list has head=3, next=2, next=1
+		// Map iterates from head: 3->6, 2->4, 1->2, so mapped head=6, next=4, next=2
+		assert(6 == *(int*)mapped->head->data);
+		assert(4 == *(int*)mapped->head->next->data);
+		assert(2 == *(int*)mapped->tail->data);
+
+		dlist_list_delete_all_nodes(list);
+		dlist_list_delete(list);
+		dlist_list_delete_all_nodes(mapped);
+		dlist_list_delete(mapped);
+
+		wmsg("[OK]\n");
+	}
+
+	{
+		wmsg("dlist_filter");
+
+		struct dlist_list *list;
+		struct dlist_list *filtered;
+		struct dlist_node *node;
+
+		list = dlist_list_new(NULL, NULL);
+
+		// Test failures
+		assert(NULL == dlist_filter(NULL, NULL));
+		assert(NULL == dlist_filter(list, NULL));
+
+		// Test empty list
+		assert(NULL == dlist_filter(list, is_even));
+
+		// Create list with 1,2,3,4
+		node = dlist_node_new(list, int_copy(1), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(2), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(3), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(4), int_dalloc);
+		dlist_node_push(list, node);
+
+		// Filter
+		assert((filtered = dlist_filter(list, is_even)));
+		assert(2 == filtered->count);  // 4 and 2 (since order: head=4, next=2)
+
+		assert(4 == *(int*)filtered->head->data);
+		assert(2 == *(int*)filtered->tail->data);
+
+		dlist_list_delete_all_nodes(list);
+		dlist_list_delete(list);
+		dlist_list_delete_all_nodes(filtered);
+		dlist_list_delete(filtered);
+
+		wmsg("[OK]\n");
+	}
+
+	{
+		wmsg("dlist_fold");
+
+		struct dlist_list *list;
+		struct dlist_node *node;
+		int sum = 0;
+
+		list = dlist_list_new(NULL, NULL);
+
+		// Test failures
+		assert(NULL == dlist_fold(NULL, &sum, NULL));
+		assert(&sum == dlist_fold(list, &sum, NULL));  // Empty list returns initial
+
+		// Test empty list
+		sum = 0;
+		assert(&sum == dlist_fold(list, &sum, add_int));
+		assert(0 == sum);
+
+		// Create list with 1,2,3
+		node = dlist_node_new(list, int_copy(1), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(2), int_dalloc);
+		dlist_node_push(list, node);
+		node = dlist_node_new(list, int_copy(3), int_dalloc);
+		dlist_node_push(list, node);
+
+		// Fold sum
+		sum = 0;
+		assert(&sum == dlist_fold(list, &sum, add_int));
+		assert(6 == sum);  // 3+2+1
+
+		dlist_list_delete_all_nodes(list);
+		dlist_list_delete(list);
+
 		wmsg("[OK]\n");
 	}
 
